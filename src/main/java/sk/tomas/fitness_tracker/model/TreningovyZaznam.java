@@ -4,8 +4,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 import java.time.LocalDate;
@@ -17,23 +15,29 @@ public class TreningovyZaznam {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    private String nazovCviku;
     private double vaha;
     private int pocetSerii;
     private int pocetOpakovani;
 
     private LocalDate datum;
 
-    @ManyToOne
-    @JoinColumn(name = "cvik_id", nullable = false)
-    private Cvik cvik;
-
     public TreningovyZaznam() {
     }
 
-    public TreningovyZaznam(double vaha, int pocetSerii, int pocetOpakovani) {
+    public TreningovyZaznam(String nazovCviku, double vaha, int pocetSerii, int pocetOpakovani) {
+        this.nazovCviku = nazovCviku;
         this.vaha = vaha;
         this.pocetSerii = pocetSerii;
         this.pocetOpakovani = pocetOpakovani;
+    }
+
+    public String getNazovCviku() {
+        return nazovCviku;
+    }
+
+    public void setNazovCviku(String nazovCviku) {
+        this.nazovCviku = nazovCviku;
     }
 
     public long getId() {
@@ -74,13 +78,5 @@ public class TreningovyZaznam {
 
     public void setDatum(LocalDate datum) {
         this.datum = datum;
-    }
-
-    public Cvik getCvik() {
-        return cvik;
-    }
-
-    public void setCvik(Cvik cvik) {
-        this.cvik = cvik;
     }
 }

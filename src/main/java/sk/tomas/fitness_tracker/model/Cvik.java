@@ -1,12 +1,10 @@
 package sk.tomas.fitness_tracker.model;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 import java.util.List;
@@ -22,10 +20,6 @@ public class Cvik {
     private String nazovCviku;
 
     private String partia;
-
-    @OneToMany(mappedBy = "cvik", cascade = CascadeType.ALL)
-    private List<TreningovyZaznam> zaznamy;
-
 
     public Cvik() {
     }
@@ -57,13 +51,5 @@ public class Cvik {
 
     public void setPartia(String partia) {
         this.partia = partia;
-    }
-
-    public List<TreningovyZaznam> getZaznamy() {
-        return zaznamy;
-    }
-
-    public void setZaznamy(List<TreningovyZaznam> zaznamy) {
-        this.zaznamy = zaznamy;
     }
 }
