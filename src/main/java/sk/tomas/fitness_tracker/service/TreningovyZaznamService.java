@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import sk.tomas.fitness_tracker.model.TreningovyZaznam;
 import sk.tomas.fitness_tracker.model.TreningovyZaznamRepository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -16,10 +17,11 @@ public class TreningovyZaznamService {
     }
 
     public List<TreningovyZaznam> getVsetkyZaznamy() {
-        return treningovyZaznamRepository.findAll();
+        return this.treningovyZaznamRepository.findAllByOrderByDatumDesc();
     }
 
     public TreningovyZaznam ulozZaznam(TreningovyZaznam novyZaznam) {
+        novyZaznam.setDatum(LocalDate.now());
         return this.treningovyZaznamRepository.save(novyZaznam);
     }
 
