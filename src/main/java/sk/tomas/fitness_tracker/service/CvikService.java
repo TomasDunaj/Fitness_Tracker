@@ -22,4 +22,20 @@ public class CvikService {
     public Cvik ulozCvik(Cvik cvik) {
         return this.cvikRepository.save(cvik);
     }
+
+    public Cvik aktualizujCvik(Long id, Cvik aktualizovanyCvik) {
+        Cvik existujuci = cvikRepository.findById(id).orElseThrow(() -> new RuntimeException("Cvik s ID : " + id + " sa nenašiel."));
+
+        existujuci.setNazovCviku(aktualizovanyCvik.getNazovCviku());
+        existujuci.setPartia(aktualizovanyCvik.getPartia());
+
+        return cvikRepository.save(existujuci);
+    }
+
+    public void vymazCvik(Long id) {
+        if (!this.cvikRepository.existsById(id)) {
+            throw new RuntimeException("Cvik s ID : " + id + " neexistuje.");
+        }
+        this.cvikRepository.deleteById(id);
+    }
 }

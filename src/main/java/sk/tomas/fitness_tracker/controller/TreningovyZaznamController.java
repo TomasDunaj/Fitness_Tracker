@@ -35,12 +35,12 @@ public class TreningovyZaznamController {
     }
 
     @PutMapping("/{id}")
-    public TreningovyZaznam aktualizujZaznam(@PathVariable long id, @RequestBody TreningovyZaznam novyZaznam) {
-        return this.treningovyZaznamService.aktualizujzaznam(id, novyZaznam);
+    public TreningovyZaznam aktualizujZaznam(@PathVariable Long id, @RequestBody ZaznamRequest novyZaznam) {
+        return this.treningovyZaznamService.aktualizujZaznam(id, novyZaznam);
     }
 
     @DeleteMapping("/{id}")
-    public void vymazZaznam(@PathVariable long id) {
+    public void vymazZaznam(@PathVariable Long id) {
         this.treningovyZaznamService.vymazZaznam(id);
     }
 }
