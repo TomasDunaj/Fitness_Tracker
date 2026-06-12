@@ -1,6 +1,5 @@
 package sk.tomas.fitness_tracker.controller;
 
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -8,9 +7,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import sk.tomas.fitness_tracker.model.TreningovyZaznam;
+import sk.tomas.fitness_tracker.model.ZaznamRequest;
 import sk.tomas.fitness_tracker.service.TreningovyZaznamService;
 
 import java.util.List;
@@ -31,8 +30,8 @@ public class TreningovyZaznamController {
     }
 
     @PostMapping
-    public TreningovyZaznam vytvorNovyZaznam(@RequestBody TreningovyZaznam novyZaznam) {
-        return this.treningovyZaznamService.ulozZaznam(novyZaznam);
+    public TreningovyZaznam vytvorNovyZaznam(@RequestBody ZaznamRequest zaznamRequest) {
+        return this.treningovyZaznamService.ulozZaznam(zaznamRequest);
     }
 
     @PutMapping("/{id}")

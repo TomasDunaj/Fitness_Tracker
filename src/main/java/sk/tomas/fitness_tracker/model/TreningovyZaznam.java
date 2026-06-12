@@ -4,6 +4,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 import java.time.LocalDate;
@@ -13,39 +16,43 @@ import java.time.LocalDate;
 public class TreningovyZaznam {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
-    private String nazovCviku;
     private double vaha;
     private int pocetSerii;
     private int pocetOpakovani;
 
     private LocalDate datum;
 
+
+    @ManyToOne
+    @JoinColumn(name = "cvik_id")
+    @com.fasterxml.jackson.annotation.JsonIgnoreProperties("zaznamy")
+    private Cvik cvik;
+
     public TreningovyZaznam() {
     }
 
-    public TreningovyZaznam(String nazovCviku, double vaha, int pocetSerii, int pocetOpakovani) {
-        this.nazovCviku = nazovCviku;
+    public TreningovyZaznam(double vaha, int pocetSerii, int pocetOpakovani) {
         this.vaha = vaha;
         this.pocetSerii = pocetSerii;
         this.pocetOpakovani = pocetOpakovani;
     }
 
-    public String getNazovCviku() {
-        return nazovCviku;
-    }
-
-    public void setNazovCviku(String nazovCviku) {
-        this.nazovCviku = nazovCviku;
-    }
-
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
+    }
+
+    public Cvik getCvik() {
+        return cvik;
+    }
+
+    public void setCvik(Cvik cvik) {
+        this.cvik = cvik;
     }
 
     public double getVaha() {
