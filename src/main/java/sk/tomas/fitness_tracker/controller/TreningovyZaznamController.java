@@ -1,5 +1,6 @@
 package sk.tomas.fitness_tracker.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,12 +31,12 @@ public class TreningovyZaznamController {
     }
 
     @PostMapping
-    public TreningovyZaznam vytvorNovyZaznam(@RequestBody ZaznamRequest zaznamRequest) {
+    public TreningovyZaznam vytvorNovyZaznam(@Valid @RequestBody ZaznamRequest zaznamRequest) {
         return this.treningovyZaznamService.ulozZaznam(zaznamRequest);
     }
 
     @PutMapping("/{id}")
-    public TreningovyZaznam aktualizujZaznam(@PathVariable Long id, @RequestBody ZaznamRequest novyZaznam) {
+    public TreningovyZaznam aktualizujZaznam(@PathVariable Long id, @Valid @RequestBody ZaznamRequest novyZaznam) {
         return this.treningovyZaznamService.aktualizujZaznam(id, novyZaznam);
     }
 
