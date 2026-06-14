@@ -1,6 +1,7 @@
-package sk.tomas.fitness_tracker.model;
+package sk.tomas.fitness_tracker.model.trening;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,8 +11,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import sk.tomas.fitness_tracker.model.cvik.Cvik;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -28,11 +29,13 @@ public class TreningovyZaznam {
 
     @ManyToOne
     @JoinColumn(name = "trening_id")
+    @JsonBackReference
     private Trening trening;
 
     public TreningovyZaznam() {
     }
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "treningovyZaznam", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Seria> serie;
 

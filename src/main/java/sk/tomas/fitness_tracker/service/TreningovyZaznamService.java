@@ -1,13 +1,11 @@
 package sk.tomas.fitness_tracker.service;
 
 import org.springframework.stereotype.Service;
-import sk.tomas.fitness_tracker.model.Cvik;
-import sk.tomas.fitness_tracker.model.CvikRepository;
-import sk.tomas.fitness_tracker.model.TreningovyZaznam;
-import sk.tomas.fitness_tracker.model.TreningovyZaznamRepository;
-import sk.tomas.fitness_tracker.model.ZaznamRequest;
+import sk.tomas.fitness_tracker.model.cvik.Cvik;
+import sk.tomas.fitness_tracker.model.repository.cvik.CvikRepository;
+import sk.tomas.fitness_tracker.model.trening.TreningovyZaznam;
+import sk.tomas.fitness_tracker.model.repository.trening.TreningovyZaznamRepository;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -26,27 +24,35 @@ public class TreningovyZaznamService {
     }
 
     public TreningovyZaznam ulozZaznam(TreningovyZaznam zaznam) {
+        if (zaznam.getCvik() == null || zaznam.getCvik().getId() == null) {
+            throw new IllegalArgumentException("Tréningový záznam musí obsahovať platné ID cviku.");
+        }
+
+        Long cvikId = zaznam.getCvik().getId();
+        Cvik existujuciCvik = cvikRepository.findById(cvikId)
+                .orElseThrow(() -> new RuntimeException("Nemožno vytvoriť záznam. Cvik s ID " + cvikId + " neexistuje."));
+
+        // Pre istotu priradíme plne načítaný cvik z DB do záznamu
+        zaznam.setCvik(existujuciCvik);
+
         if (zaznam.getSerie() != null) {
             zaznam.getSerie().forEach(seria -> seria.setTreningovyZaznam(zaznam));
         }
         return this.treningovyZaznamRepository.save(zaznam);
     }
 
-    public TreningovyZaznam aktualizujZaznam(Long id, ZaznamRequest request) {
+    public TreningovyZaznam aktualizujZaznam(Long id, Long cvikId) {
+        if (cvikId == null) {
+            throw new IllegalArgumentException("Musíš zadať ID cviku na aktualizáciu.");
+        }
+
         TreningovyZaznam existujuciZaznam = treningovyZaznamRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Záznam s ID " + id + " sa nenašiel."));
 
+        Cvik novyCvik = cvikRepository.findById(cvikId)
+                .orElseThrow(() -> new RuntimeException("Cvik s ID " + cvikId + " neexistuje."));
 
-        if (request.getCvikId() != null) {
-            Cvik novyCvik = cvikRepository.findById(request.getCvikId())
-                    .orElseThrow(() -> new RuntimeException("Cvik s ID " + request.getCvikId() + " neexistuje."));
-
-            existujuciZaznam.setCvik(novyCvik);
-        }
-        else {
-            existujuciZaznam.setCvik(null);
-        }
-
+        existujuciZaznam.setCvik(novyCvik);
         return treningovyZaznamRepository.save(existujuciZaznam);
     }
 

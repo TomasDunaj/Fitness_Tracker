@@ -2,9 +2,9 @@ package sk.tomas.fitness_tracker.service;
 
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
-import sk.tomas.fitness_tracker.model.Trening;
-import sk.tomas.fitness_tracker.model.TreningRepository;
-import sk.tomas.fitness_tracker.model.TreningovyZaznam;
+import sk.tomas.fitness_tracker.model.trening.Trening;
+import sk.tomas.fitness_tracker.model.repository.trening.TreningRepository;
+import sk.tomas.fitness_tracker.model.trening.TreningovyZaznam;
 
 import java.util.List;
 

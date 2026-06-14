@@ -1,14 +1,18 @@
-package sk.tomas.fitness_tracker.model;
+package sk.tomas.fitness_tracker.model.cvik;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import sk.tomas.fitness_tracker.model.enums.SvalovaPartia;
+import sk.tomas.fitness_tracker.model.trening.TreningovyZaznam;
 
 import java.util.List;
 
@@ -19,10 +23,13 @@ public class Cvik {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = true, unique = true)
+    @NotBlank(message = "Názov cviku nesmie byť prázdny!")
+    @Column(nullable = false, unique = true)
     private String nazovCviku;
 
-    private String partia;
+    @Enumerated
+    @Column(name = "svalova_partia", nullable = false)
+    private SvalovaPartia svalovaPartia;
 
 
     @OneToMany(mappedBy = "cvik", cascade = CascadeType.ALL)
@@ -33,9 +40,9 @@ public class Cvik {
     public Cvik() {
     }
 
-    public Cvik(String nazovCviku, String partia) {
+    public Cvik(String nazovCviku, SvalovaPartia partia) {
         this.nazovCviku = nazovCviku;
-        this.partia = partia;
+        this.svalovaPartia = partia;
     }
 
     public List<TreningovyZaznam> getZaznamy() {
@@ -62,11 +69,11 @@ public class Cvik {
         this.nazovCviku = nazovCviku;
     }
 
-    public String getPartia() {
-        return partia;
+    public SvalovaPartia getSvalovaPartia() {
+        return svalovaPartia;
     }
 
-    public void setPartia(String partia) {
-        this.partia = partia;
+    public void setSvalovaPartia(SvalovaPartia svalovaPartia) {
+        this.svalovaPartia = svalovaPartia;
     }
 }

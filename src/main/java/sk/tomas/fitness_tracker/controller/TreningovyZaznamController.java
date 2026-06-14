@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import sk.tomas.fitness_tracker.model.TreningovyZaznam;
-import sk.tomas.fitness_tracker.model.ZaznamRequest;
+import sk.tomas.fitness_tracker.model.trening.TreningovyZaznam;
 import sk.tomas.fitness_tracker.service.TreningovyZaznamService;
 
 import java.util.List;
@@ -36,8 +36,8 @@ public class TreningovyZaznamController {
     }
 
     @PutMapping("/{id}")
-    public TreningovyZaznam aktualizujZaznam(@PathVariable Long id, @Valid @RequestBody ZaznamRequest novyZaznam) {
-        return this.treningovyZaznamService.aktualizujZaznam(id, novyZaznam);
+    public TreningovyZaznam aktualizujZaznam(@PathVariable Long id, @Valid @RequestParam Long cvikId) {
+        return this.treningovyZaznamService.aktualizujZaznam(id, cvikId);
     }
 
     @DeleteMapping("/{id}")

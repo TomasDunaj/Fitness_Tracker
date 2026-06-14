@@ -1,7 +1,7 @@
-package sk.tomas.fitness_tracker.model;
+package sk.tomas.fitness_tracker.model.trening;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -27,7 +27,7 @@ public class Trening {
     private LocalDate datum;
 
     @OneToMany(mappedBy = "trening", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnoreProperties("trening")
+    @JsonManagedReference
     private List<TreningovyZaznam> zaznamy;
 
 

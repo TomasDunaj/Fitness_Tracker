@@ -1,5 +1,6 @@
-package sk.tomas.fitness_tracker.model;
+package sk.tomas.fitness_tracker.model.trening;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -28,7 +29,7 @@ public class Seria {
 
     @ManyToOne
     @JoinColumn(name = "treningovy_zaznam_id")
-    @JsonIgnore
+    @JsonBackReference
     private TreningovyZaznam treningovyZaznam;
 
     public Seria() {

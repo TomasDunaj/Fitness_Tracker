@@ -1,8 +1,8 @@
 package sk.tomas.fitness_tracker.service;
 
 import org.springframework.stereotype.Service;
-import sk.tomas.fitness_tracker.model.Cvik;
-import sk.tomas.fitness_tracker.model.CvikRepository;
+import sk.tomas.fitness_tracker.model.cvik.Cvik;
+import sk.tomas.fitness_tracker.model.repository.cvik.CvikRepository;
 
 import java.util.List;
 
@@ -27,7 +27,7 @@ public class CvikService {
         Cvik existujuci = cvikRepository.findById(id).orElseThrow(() -> new RuntimeException("Cvik s ID : " + id + " sa nenašiel."));
 
         existujuci.setNazovCviku(aktualizovanyCvik.getNazovCviku());
-        existujuci.setPartia(aktualizovanyCvik.getPartia());
+        existujuci.setSvalovaPartia(aktualizovanyCvik.getSvalovaPartia());
 
         return cvikRepository.save(existujuci);
     }
