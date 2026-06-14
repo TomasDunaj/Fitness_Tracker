@@ -1,5 +1,6 @@
 package sk.tomas.fitness_tracker.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -24,6 +25,10 @@ public class TreningovyZaznam {
     @JoinColumn(name = "cvik_id")
     @com.fasterxml.jackson.annotation.JsonIgnoreProperties("zaznamy")
     private Cvik cvik;
+
+    @ManyToOne
+    @JoinColumn(name = "trening_id")
+    private Trening trening;
 
     public TreningovyZaznam() {
     }
@@ -55,5 +60,13 @@ public class TreningovyZaznam {
 
     public void setSerie(List<Seria> serie) {
         this.serie = serie;
+    }
+
+    public Trening getTrening() {
+        return trening;
+    }
+
+    public void setTrening(Trening trening) {
+        this.trening = trening;
     }
 }
