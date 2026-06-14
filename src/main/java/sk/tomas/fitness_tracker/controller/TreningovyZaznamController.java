@@ -44,4 +44,9 @@ public class TreningovyZaznamController {
     public void vymazZaznam(@PathVariable Long id) {
         this.treningovyZaznamService.vymazZaznam(id);
     }
+
+    @GetMapping("/cvik/{cvikId}")
+    public List<TreningovyZaznam> getZaznamyCviku(@PathVariable Long cvikId) {
+        return this.treningovyZaznamService.getZaznamyPreCvik(cvikId);
+    }
 }

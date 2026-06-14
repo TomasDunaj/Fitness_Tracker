@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface TreningovyZaznamRepository extends JpaRepository<TreningovyZaznam, Long> {
     List<TreningovyZaznam> findAllByOrderByDatumDesc();
+    List<TreningovyZaznam> findByCvikId(Long cvikId);
 }

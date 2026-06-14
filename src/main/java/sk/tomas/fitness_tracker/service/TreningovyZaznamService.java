@@ -64,4 +64,8 @@ public class TreningovyZaznamService {
     public void vymazZaznam(Long id) {
         this.treningovyZaznamRepository.deleteById(id);
     }
+
+    public List<TreningovyZaznam> getZaznamyPreCvik(Long id) {
+        return this.treningovyZaznamRepository.findByCvikId(id);
+    }
 }
