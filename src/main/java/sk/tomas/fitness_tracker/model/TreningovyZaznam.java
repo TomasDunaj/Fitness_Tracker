@@ -1,5 +1,6 @@
 package sk.tomas.fitness_tracker.model;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -10,6 +11,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "treningove_Zaznamy")
@@ -17,13 +19,6 @@ public class TreningovyZaznam {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    private double vaha;
-    private int pocetSerii;
-    private int pocetOpakovani;
-
-    private LocalDate datum;
-
 
     @ManyToOne
     @JoinColumn(name = "cvik_id")
@@ -33,11 +28,10 @@ public class TreningovyZaznam {
     public TreningovyZaznam() {
     }
 
-    public TreningovyZaznam(double vaha, int pocetSerii, int pocetOpakovani) {
-        this.vaha = vaha;
-        this.pocetSerii = pocetSerii;
-        this.pocetOpakovani = pocetOpakovani;
-    }
+    @OneToMany(mappedBy = "treningovyZaznam", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Seria> serie;
+
+
 
     public Long getId() {
         return id;
@@ -55,35 +49,11 @@ public class TreningovyZaznam {
         this.cvik = cvik;
     }
 
-    public double getVaha() {
-        return vaha;
+    public List<Seria> getSerie() {
+        return serie;
     }
 
-    public void setVaha(double vaha) {
-        this.vaha = vaha;
-    }
-
-    public int getPocetSerii() {
-        return pocetSerii;
-    }
-
-    public void setPocetSerii(int pocetSerii) {
-        this.pocetSerii = pocetSerii;
-    }
-
-    public int getPocetOpakovani() {
-        return pocetOpakovani;
-    }
-
-    public void setPocetOpakovani(int pocetOpakovani) {
-        this.pocetOpakovani = pocetOpakovani;
-    }
-
-    public LocalDate getDatum() {
-        return datum;
-    }
-
-    public void setDatum(LocalDate datum) {
-        this.datum = datum;
+    public void setSerie(List<Seria> serie) {
+        this.serie = serie;
     }
 }

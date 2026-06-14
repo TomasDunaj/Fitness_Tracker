@@ -25,36 +25,25 @@ public class TreningovyZaznamService {
         return this.treningovyZaznamRepository.findAll();
     }
 
-    public TreningovyZaznam ulozZaznam(ZaznamRequest request) {
-        TreningovyZaznam novyZaznam = new TreningovyZaznam();
-        novyZaznam.setVaha(request.getVaha());
-        novyZaznam.setPocetSerii(request.getPocetSerii());
-        novyZaznam.setPocetOpakovani(request.getPocetOpakovani());
-        novyZaznam.setDatum(LocalDate.now());
-
-        if (request.getCvikId() != null) {
-            Cvik existujuciCvik = cvikRepository.findById(request.getCvikId())
-                    .orElseThrow(() -> new RuntimeException("Cvik sa nenašiel."));
-            novyZaznam.setCvik(existujuciCvik);
+    public TreningovyZaznam ulozZaznam(TreningovyZaznam zaznam) {
+        if (zaznam.getSerie() != null) {
+            zaznam.getSerie().forEach(seria -> seria.setTreningovyZaznam(zaznam));
         }
-
-        return this.treningovyZaznamRepository.save(novyZaznam);
+        return this.treningovyZaznamRepository.save(zaznam);
     }
 
     public TreningovyZaznam aktualizujZaznam(Long id, ZaznamRequest request) {
         TreningovyZaznam existujuciZaznam = treningovyZaznamRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Záznam s ID " + id + " sa nenašiel."));
 
-        existujuciZaznam.setVaha(request.getVaha());
-        existujuciZaznam.setPocetSerii(request.getPocetSerii());
-        existujuciZaznam.setPocetOpakovani(request.getPocetOpakovani());
 
         if (request.getCvikId() != null) {
             Cvik novyCvik = cvikRepository.findById(request.getCvikId())
                     .orElseThrow(() -> new RuntimeException("Cvik s ID " + request.getCvikId() + " neexistuje."));
 
             existujuciZaznam.setCvik(novyCvik);
-        } else {
+        }
+        else {
             existujuciZaznam.setCvik(null);
         }
 

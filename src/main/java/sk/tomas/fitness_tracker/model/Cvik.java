@@ -1,5 +1,6 @@
 package sk.tomas.fitness_tracker.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -28,6 +29,7 @@ public class Cvik {
     @com.fasterxml.jackson.annotation.JsonIgnoreProperties("cvik")
     private List<TreningovyZaznam> zaznamy;
 
+    @JsonCreator
     public Cvik() {
     }
 

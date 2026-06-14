@@ -31,8 +31,8 @@ public class TreningovyZaznamController {
     }
 
     @PostMapping
-    public TreningovyZaznam vytvorNovyZaznam(@Valid @RequestBody ZaznamRequest zaznamRequest) {
-        return this.treningovyZaznamService.ulozZaznam(zaznamRequest);
+    public TreningovyZaznam vytvorNovyZaznam(@Valid @RequestBody TreningovyZaznam zaznam) {
+        return this.treningovyZaznamService.ulozZaznam(zaznam);
     }
 
     @PutMapping("/{id}")
