@@ -1,9 +1,13 @@
 package sk.tomas.fitness_tracker.controller;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import sk.tomas.fitness_tracker.model.trening.Trening;
 import sk.tomas.fitness_tracker.service.TreningService;
@@ -12,6 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/treningy")
+@CrossOrigin(origins = "http://localhost:5173")
 public class TreningController {
     private final TreningService treningService;
 
@@ -27,5 +32,10 @@ public class TreningController {
     @GetMapping
     public List<Trening> getTreningy() {
         return this.treningService.getVsetkyTreningy();
+    }
+
+    @DeleteMapping("/{id}")
+    public void vymazTrening(@PathVariable Long id) {
+        this.treningService.vymazTrening(id);
     }
 }
