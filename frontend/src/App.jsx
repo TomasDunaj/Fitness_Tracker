@@ -1,11 +1,13 @@
 import {useEffect, useState} from "react";
+import "./App.css";
 
 function App() {
     const [treningy, setTreningy] = useState([]);
 
     const [novyNazov, setNovyNazov] = useState("");
-    const [noveSerie, setNoveSerie] = useState(4);
-    const [noveOpakovania, setNoveOpakovania] = useState(10);
+    const [formularSerie, setFormularSerie] = useState([
+        {id: 1, pocetOpakovani: 0, vaha: 0}
+    ]);
 
     const API_URL = "http://localhost:8080/api/treningy";
 
@@ -19,7 +21,7 @@ function App() {
             .catch((error) => console.error("Chyba pri načítaní dát : ", error))
     }, []);
 
-    const prepniStav = (idCviku) => {
+    const ľprepniStav = (idCviku) => {
         const upraveneTreningy = treningy.map((t) => {
             if (t.id === idCviku) {
                 return {...t, hotovo: !t.hotovo};
@@ -34,9 +36,9 @@ function App() {
     const pridajCvik = () => {
         if (novyNazov.trim() === "") return;
 
-        const vygenerovaneSerie = Array.from({ length: noveSerie }, () => ({
-            vaha: 60,
-            pocetOpakovani: noveOpakovania
+        const vygenerovaneSerie = formularSerie.map(s => ({
+            vaha: s.vaha,
+            pocetOpakovani: s.pocetOpakovani
         }));
 
         const novyTrening = {
@@ -66,10 +68,9 @@ function App() {
                     setTreningy([...treningy, novyZaznam]);
                 }
                 setNovyNazov("");
-                setNoveSerie(4);
-                setNoveOpakovania(10);
-
-
+                setFormularSerie([
+                    { id: 1, pocetOpakovani: 10, vaha: 0}
+                ]);
             })
             .catch((error) => console.error("Chyba pri ukladaní : ", error));
     }
@@ -80,19 +81,37 @@ function App() {
         setTreningy(upraveneTreningy);
     }
 
-    return (
-        <div style={{fontFamily: 'Arial, sans-serif', padding: '20px'}}>
-            <h1>🏋️‍♂️ Môj Tréningový Panel</h1>
-            <p>Dáta pripravné na prepojenie s Javou</p>
+    const pridajSeriuDoFormulara = () => {
+        setFormularSerie([
+            ...formularSerie, {id: Date.now(), pocetOpakovani: 10, vaha: 0}
+        ]);
+    };
 
-            <table border="1" cellPadding="10"
-                   style={{borderCollapse: 'collapse', width: '100%', maxWidth: '600px'}}>
+    const odstranSeriuZFormulara = (id) => {
+        if (formularSerie.length > 1) {
+            setFormularSerie(formularSerie.filter(s => s.id !== id));
+        }
+    };
+
+    const zmenSeriuVFormulari = (id, pole, hodnota) => {
+        setFormularSerie(formularSerie.map(s =>
+            s.id === id ? {...s, [pole]: Number(hodnota)} : s
+        ));
+    }
+
+    return (
+        <div className="app-container">
+            <h1>🏋️‍♂️ Fitness tracker 🏋️‍♂️ </h1>
+            <p className="subtitle">Gym session tracker</p>
+
+            <table>
                 <thead>
-                <tr style={{backgroundColor: '#f2f2f2'}}>
+                <tr>
                     <th>Cvik</th>
                     <th>Séria</th>
                     <th>Opakovania</th>
                     <th>Stav</th>
+                    <th>Akcie</th>
                 </tr>
                 </thead>
 
@@ -103,103 +122,94 @@ function App() {
                         <td>{t.serie ? t.serie.length : 0}</td>
                         <td>{t.serie && t.serie.length > 0 ? t.serie[0].pocetOpakovani : 0}</td>
                         <td>
-                            <span>
-                                {t.hotovo ? "✅ Splnené" : "❌ Čaká ma"}
+                            <span className={t.hotovo ? "status-done" : "status-todo"}>
+                                    {t.hotovo ? "✅ Splnené" : "❌ Čaká ma"}
                             </span>
+                        </td>
 
-                            <button
-                                onClick={() => prepniStav(t.id)}
-                                style={{
-                                    marginRight: '5px',
-                                    cursor: 'pointer',
-                                    backgroundColor: '#008000',
-                                    border: '1px solid #ccc',
-                                    padding: '5px 10px',
-                                    borderRadius: '4px'
-                                }}
-                            >
-                                Zmeň
-                            </button>
+                        <td>
+                            <div className="action-buttons">
+                                <button className="btn-change" onClick={() => prepniStav(t.id)}>
+                                    Zmeň
+                                </button>
 
-                            <button
-                                onClick={() => vymazCvik(t.id)}
-                                style={{
-                                    cursor: 'pointer',
-                                    backgroundColor: '#ff4d4d',
-                                    color: 'white',
-                                    border: 'none',
-                                    padding: '5px 10px',
-                                    borderRadius: '4px'
-                                }}
-                            >
-                                Zmaž
-                            </button>
-
+                                <button className="btn-delete" onClick={() => vymazCvik(t.id)}>
+                                    Zmaž
+                                </button>
+                            </div>
                         </td>
                     </tr>
                 ))}
                 </tbody>
             </table>
 
-            <div style={{
-                backgroundColor: '#f9f9f9',
-                padding: '15px',
-                borderRadius: '8px',
-                maxWidth: '600px',
-                border: '1px solid #eee'
-            }}>
-                <h3 style={{marginTop: 0}}>➕ Pridať nový cvik</h3>
-                <div style={{display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center'}}>
-                    <input
-                        type="text"
-                        placeholder="Názov cviku"
-                        value={novyNazov}
-                        onChange={(e) => setNovyNazov(e.target.value)}
-                        style={{
-                            padding: '8px',
-                            width: '250px',
-                            marginRight: '10px',
-                            borderRadius: '4px',
-                            border: '1px solid #ccc'
-                        }}
-                    />
+            <div className="add-exercise-box">
+                <h3>➕ Pridať nový cvik</h3>
 
-                    <label>Série : </label>
-                    <input
-                        type="number"
-                        min="1"
-                        value={noveSerie}
-                        onChange={(e) => setNoveSerie(Number(e.target.value))}
-                        style={{padding: '8px', width: '50px', borderRadius: '4px', border: '1px solid #ccc'}}
-                    />
+                <div className="form-grid">
+                    <div className="form-group row-span">
+                        <input
+                            type="text"
+                            placeholder="Názov cviku"
+                            value={novyNazov}
+                            onChange={(e) => setNovyNazov(e.target.value)}
+                        />
+                    </div>
 
-                    <label>Opakovania : </label>
-                    <input
-                        type="number"
-                        min="1"
-                        value={noveOpakovania}
-                        onChange={(e) => setNoveOpakovania(Number(e.target.value))}
-                        style={{padding: '8px', width: '50px', borderRadius: '4px', border: '1px solid #ccc'}}
-                    />
+                    <div className="form-series-list">
+                        <h4>Série pre tento cvik : </h4>
 
-                    <button
-                        onClick={pridajCvik}
-                        style={{
-                            cursor: 'pointer',
-                            backgroundColor: '#4CAF50',
-                            color: 'white',
-                            border: 'none',
-                            padding: '8px 15px',
-                            borderRadius: '4px',
-                            fontWeight: 'bold'
-                        }}
-                    >
-                        Pridať cvik
-                    </button>
+                        {formularSerie.map((seria, index) => (
+                            <div key={seria.id} className="form-series-row">
+                                <span>{index + 1}. séria : </span>
+
+                                <input
+                                    type="number"
+                                    min="1"
+                                    placeholder="Opakovania"
+                                    value={seria.pocetOpakovani}
+                                    onChange={(e) => zmenSeriuVFormulari(seria.id, 'pocetOpakovani', e.target.value)}
+                                />
+
+                                <input
+                                    type="number"
+                                    min="0"
+                                    placeholder="Váha (kg)"
+                                    value={seria.vaha}
+                                    onChange={(e) => zmenSeriuVFormulari(seria.id, 'vaha', e.target.value)}
+                                />
+
+                                {formularSerie.length > 1 && (
+                                    <button
+                                        type="button"
+                                        className="btn-delete-row"
+                                        onClick={() => odstranSeriuZFormulara(seria.id)}
+                                    >
+                                        ❌
+                                    </button>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className="form-actions">
+                        <button
+                            type="button"
+                            className="btn-add-series"
+                            onClick={pridajSeriuDoFormulara}
+                        >
+                            ➕ Pridať sériu
+                        </button>
+
+                        <button className="btn-submit" onClick={pridajCvik}>
+                            Pridať cvik
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     );
 }
 
-export default App;
+
+            export default App;
