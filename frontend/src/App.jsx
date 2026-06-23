@@ -1,13 +1,21 @@
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import "./App.css";
 
 function App() {
     const [treningy, setTreningy] = useState([]);
 
     const [novyNazov, setNovyNazov] = useState("");
+
+    const PRAZDNA_SERIA = {pocetOpakovani: "", vaha: ""}
     const [formularSerie, setFormularSerie] = useState([
-        {id: 1, pocetOpakovani: 0, vaha: 0}
+        {id: 1, ...PRAZDNA_SERIA}
     ]);
+
+    const [vybranyCvikId, setVybranyCvikId] = useState(null);
+
+    const klikolNaCvik = (id) => {
+        setVybranyCvikId(vybranyCvikId === id ? null : id);
+    };
 
     const API_URL = "http://localhost:8080/api/treningy";
 
@@ -21,7 +29,7 @@ function App() {
             .catch((error) => console.error("Chyba pri načítaní dát : ", error))
     }, []);
 
-    const ľprepniStav = (idCviku) => {
+    const prepniStav = (idCviku) => {
         const upraveneTreningy = treningy.map((t) => {
             if (t.id === idCviku) {
                 return {...t, hotovo: !t.hotovo};
@@ -69,7 +77,7 @@ function App() {
                 }
                 setNovyNazov("");
                 setFormularSerie([
-                    { id: 1, pocetOpakovani: 10, vaha: 0}
+                    {id: 1, ...PRAZDNA_SERIA}
                 ]);
             })
             .catch((error) => console.error("Chyba pri ukladaní : ", error));
@@ -83,7 +91,7 @@ function App() {
 
     const pridajSeriuDoFormulara = () => {
         setFormularSerie([
-            ...formularSerie, {id: Date.now(), pocetOpakovani: 10, vaha: 0}
+            ...formularSerie, {id: Date.now(), ...PRAZDNA_SERIA}
         ]);
     };
 
@@ -94,22 +102,33 @@ function App() {
     };
 
     const zmenSeriuVFormulari = (id, pole, hodnota) => {
+        if (hodnota === "") {
+            setFormularSerie(formularSerie.map(s =>
+            s.id === id ? {...s, [pole]: ""} : s
+            ));
+            return;
+        }
+
+        const cislo = Number(hodnota);
+
+        const minHodnota = pole === 'pocetOpakovani' ? 1 : 0;
+        const upraveneCislo = cislo < minHodnota ? minHodnota : cislo;
+
         setFormularSerie(formularSerie.map(s =>
-            s.id === id ? {...s, [pole]: Number(hodnota)} : s
+            s.id === id ? {...s, [pole]: upraveneCislo} : s
         ));
     }
 
     return (
         <div className="app-container">
-            <h1>🏋️‍♂️ Fitness tracker 🏋️‍♂️ </h1>
-            <p className="subtitle">Gym session tracker</p>
+            <h1> Fitness tracker </h1>
+            <p className="subtitle">Track your gains, crush your goals</p>
 
             <table>
                 <thead>
                 <tr>
                     <th>Cvik</th>
-                    <th>Séria</th>
-                    <th>Opakovania</th>
+                    <th>Série</th>
                     <th>Stav</th>
                     <th>Akcie</th>
                 </tr>
@@ -117,31 +136,53 @@ function App() {
 
                 <tbody>
                 {treningy.map((t) => (
-                    <tr key={t.id}>
-                        <td>{t.cvik ? t.cvik.nazovCviku : "Neznámy cvik"}</td>
-                        <td>{t.serie ? t.serie.length : 0}</td>
-                        <td>{t.serie && t.serie.length > 0 ? t.serie[0].pocetOpakovani : 0}</td>
-                        <td>
-                            <span className={t.hotovo ? "status-done" : "status-todo"}>
-                                    {t.hotovo ? "✅ Splnené" : "❌ Čaká ma"}
-                            </span>
-                        </td>
+                    <React.Fragment key={t.id}>
+                        <tr onClick={() => klikolNaCvik(t.id)}>
+                            <td>{t.cvik ? t.cvik.nazovCviku : "Neznámy cvik"}</td>
+                            <td>{t.serie ? t.serie.length : 0}</td>
+                            <td>
+                                <span className={t.hotovo ? "status-done" : "status-todo"}>
+                                    {t.hotovo ? "Splnené" : "Čaká ma"}
+                                </span>
+                            </td>
+                            <td>
+                                <div className="action-buttons">
+                                    <button className="btn-change" onClick={(e) => {
+                                        e.stopPropagation();
+                                        prepniStav(t.id);
+                                    }}>
+                                        Zmeň
+                                    </button>
 
-                        <td>
-                            <div className="action-buttons">
-                                <button className="btn-change" onClick={() => prepniStav(t.id)}>
-                                    Zmeň
-                                </button>
+                                    <button className="btn-delete" onClick={(e) => {
+                                        e.stopPropagation();
+                                        vymazCvik(t.id)
+                                    }}>
+                                        Zmaž
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
 
-                                <button className="btn-delete" onClick={() => vymazCvik(t.id)}>
-                                    Zmaž
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
+
+                        {vybranyCvikId === t.id && (
+                            <tr>
+                                <td colSpan={5}>
+                                    <ul>
+                                        {t.serie && t.serie.map((seria, index) => (
+                                            <li key={seria.id || index}>
+                                                {index + 1}. séria : {seria.pocetOpakovani}x @ {seria.vaha}kg
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </td>
+                            </tr>
+                        )}
+                    </React.Fragment>
                 ))}
                 </tbody>
             </table>
+
 
             <div className="add-exercise-box">
                 <h3>➕ Pridať nový cvik</h3>
@@ -212,4 +253,4 @@ function App() {
 }
 
 
-            export default App;
+export default App;
