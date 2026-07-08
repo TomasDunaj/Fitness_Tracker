@@ -20,7 +20,7 @@ public class TreningovyZaznamService {
     }
 
     public List<TreningovyZaznam> getVsetkyZaznamy() {
-        return this.treningovyZaznamRepository.findAll();
+        return this.treningovyZaznamRepository.findAllByOrderByIdDesc();
     }
 
     public TreningovyZaznam ulozZaznam(TreningovyZaznam zaznam) {
@@ -32,7 +32,6 @@ public class TreningovyZaznamService {
         Cvik existujuciCvik = cvikRepository.findById(cvikId)
                 .orElseThrow(() -> new RuntimeException("Nemožno vytvoriť záznam. Cvik s ID " + cvikId + " neexistuje."));
 
-        // Pre istotu priradíme plne načítaný cvik z DB do záznamu
         zaznam.setCvik(existujuciCvik);
 
         if (zaznam.getSerie() != null) {

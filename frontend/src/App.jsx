@@ -8,7 +8,10 @@ function App() {
 
     const [activeTab, setActiveTab] = useState('trening');
 
+    const [history, setHistory] = useState([]);
+
     const PRAZDNA_SERIA = {pocetOpakovani: "", vaha: ""}
+
     const [formularSerie, setFormularSerie] = useState([
         {id: 1, ...PRAZDNA_SERIA}
     ]);
@@ -25,11 +28,29 @@ function App() {
         fetch(API_URL)
             .then((response) => response.json())
             .then((vsetkyTreningy) => {
-                const vsetkyCviky = vsetkyTreningy.flatMap(t => t.zaznamy || []);
-                setTreningy(vsetkyCviky);
+                const tzoffset = (new Date()).getTimezoneOffset() * 60000;
+                const dnesnyDatum = (new Date(Date.now() - tzoffset)).toISOString().split('T')[0];
+                const currentTraining = vsetkyTreningy.filter(t => t.datum === dnesnyDatum);
+                const currentExercises = currentTraining.flatMap(t => t.zaznamy || []);
+
+                setTreningy(currentExercises);
             })
+
+
             .catch((error) => console.error("Chyba pri načítaní dát : ", error))
     }, []);
+
+    useEffect(() => {
+        if (activeTab === 'historia') {
+            fetch('http://localhost:8080/api/zaznamy')
+                .then(response => response.json())
+                .then(data => {
+                    console.log("DÁTA : ", data);
+                    setHistory(data);
+                })
+                .catch(error => console.error("Chyba pri načítaní histórie : ", error));
+        }
+    }, [activeTab]);
 
     const prepniStav = (idCviku) => {
         const upraveneTreningy = treningy.map((t) => {
@@ -51,8 +72,11 @@ function App() {
             pocetOpakovani: s.pocetOpakovani
         }));
 
+        const tzoffset = (new Date()).getTimezoneOffset() * 60000;
+        const lokalnyDnesnyDatum = (new Date(Date.now() - tzoffset)).toISOString().split('T')[0];
+
         const novyTrening = {
-            datum: new Date().toISOString().split('T')[0],
+            datum: lokalnyDnesnyDatum,
             zaznamy: [
                 {
                     cvik: {
@@ -284,9 +308,37 @@ function App() {
                 )}
 
                 {activeTab === 'historia' && (
-                    <div className="page-section">
+                    <div className="page-section history-container">
                         <h2>📅 História tréningov</h2>
-                        <p>Tu sa čoskoro zobrazia tvoje minulé tréningy.</p>
+
+                        {history.length === 0 ? (
+                            <p>Zatiaľ nemáš uložené ziadne tréningy alebo sa načítavajú...</p>
+                        ) : (
+                            <div className="history-list">
+                                {history.map((workout) => (
+                                    <div key={workout.id} className="history-card">
+                                        <div className="card-header">
+                                            <h3>
+                                                {workout.cvik?.nazovCviku || "Neznámy cvik"}
+                                            </h3>
+                                            <span className="workout-date">
+                                                {workout.trening?.datum || `Záznam #${workout.id}`}
+                                            </span>
+                                        </div>
+                                        <div className="card-body">
+                                            <ul className="history-series-list">
+                                                {workout.serie && workout.serie.map((seria, index) => (
+                                                    <li key={seria.id || index}>
+                                                        <strong>{index + 1}. séria:</strong> {seria.pocetOpakovani}x @ {seria.vaha} kg
+                                                    </li>
+                                                ))}
+                                            </ul>
+
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                     </div>
                 )}
 

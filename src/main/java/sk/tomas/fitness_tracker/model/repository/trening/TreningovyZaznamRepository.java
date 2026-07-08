@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface TreningovyZaznamRepository extends JpaRepository<TreningovyZaznam, Long> {
     List<TreningovyZaznam> findByCvikId(Long cvikId);
+    List<TreningovyZaznam> findAllByOrderByIdDesc();
 }

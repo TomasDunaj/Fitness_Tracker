@@ -1,6 +1,7 @@
 package sk.tomas.fitness_tracker.controller;
 
 import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +18,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/zaznamy")
+@CrossOrigin(origins = "*")
 public class TreningovyZaznamController {
 
     private final TreningovyZaznamService treningovyZaznamService;
