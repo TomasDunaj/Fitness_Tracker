@@ -52,16 +52,35 @@ function App() {
         }
     }, [activeTab]);
 
-    const prepniStav = (idCviku) => {
+    const prepniStav = (idZaznamu) => {
+        const povodnyStav = [...treningy];
+
         const upraveneTreningy = treningy.map((t) => {
-            if (t.id === idCviku) {
-                return {...t, hotovo: !t.hotovo};
+            if (t.id === idZaznamu) {
+                return {...t, splnene: !t.splnene};
             }
 
             return t;
         });
-
         setTreningy((upraveneTreningy));
+
+        fetch(`http://localhost:8080/api/zaznamy/${idZaznamu}`, {
+            method: 'PUT',
+            headers: {
+                "Content-Type": "application/json",
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Failed to save");
+                }
+                return response.json();
+            })
+            .catch((error) => {
+                console.error("Chyba pri prepínaní stavu na backende : ", error);
+                setTreningy(povodnyStav);
+                alert("Nepodarilo sa uložiť stav tréningu na server.");
+            });
     };
 
     const pridajCvik = () => {
@@ -195,8 +214,8 @@ function App() {
                                             <td>{t.cvik ? t.cvik.nazovCviku : "Neznámy cvik"}</td>
                                             <td>{t.serie ? t.serie.length : 0}</td>
                                             <td>
-                                <span className={t.hotovo ? "status-done" : "status-todo"}>
-                                    {t.hotovo ? "Splnené" : "Čaká ma"}
+                                <span className={t.splnene ? "status-done" : "status-todo"}>
+                                    {t.splnene ? "Splnené" : "Čaká ma"}
                                 </span>
                                             </td>
                                             <td>
@@ -329,7 +348,8 @@ function App() {
                                             <ul className="history-series-list">
                                                 {workout.serie && workout.serie.map((seria, index) => (
                                                     <li key={seria.id || index}>
-                                                        <strong>{index + 1}. séria:</strong> {seria.pocetOpakovani}x @ {seria.vaha} kg
+                                                        <strong>{index + 1}. séria:</strong> {seria.pocetOpakovani}x
+                                                        @ {seria.vaha} kg
                                                     </li>
                                                 ))}
                                             </ul>

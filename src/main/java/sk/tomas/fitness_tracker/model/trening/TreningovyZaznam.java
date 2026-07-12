@@ -39,6 +39,7 @@ public class TreningovyZaznam {
     @OneToMany(mappedBy = "treningovyZaznam", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Seria> serie;
 
+    private Boolean splnene;
 
 
     public Long getId() {
@@ -71,5 +72,13 @@ public class TreningovyZaznam {
 
     public void setTrening(Trening trening) {
         this.trening = trening;
+    }
+
+    public Boolean isSplnene() {
+        return this.splnene;
+    }
+
+    public void setSplnene(boolean splnene) {
+        this.splnene = splnene;
     }
 }

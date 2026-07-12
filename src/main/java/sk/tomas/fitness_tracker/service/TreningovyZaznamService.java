@@ -62,4 +62,16 @@ public class TreningovyZaznamService {
     public List<TreningovyZaznam> getZaznamyPreCvik(Long id) {
         return this.treningovyZaznamRepository.findByCvikId(id);
     }
+
+    public TreningovyZaznam aktualizujStav(Long id) {
+        TreningovyZaznam zaznam = this.treningovyZaznamRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Záznam s ID " + id + " sa nenašiel."));
+
+        boolean aktualnyStav = (zaznam.isSplnene() != null) ? zaznam.isSplnene() : false;
+
+        zaznam.setSplnene(!aktualnyStav);
+
+        return treningovyZaznamRepository.save(zaznam);
+
+    }
 }

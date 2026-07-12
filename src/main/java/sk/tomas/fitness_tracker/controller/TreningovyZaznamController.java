@@ -38,8 +38,9 @@ public class TreningovyZaznamController {
     }
 
     @PutMapping("/{id}")
-    public TreningovyZaznam aktualizujZaznam(@PathVariable Long id, @Valid @RequestParam Long cvikId) {
-        return this.treningovyZaznamService.aktualizujZaznam(id, cvikId);
+    public TreningovyZaznam aktualizujStav(@PathVariable Long id) {
+        return this.treningovyZaznamService.aktualizujStav(id);
+
     }
 
     @DeleteMapping("/{id}")
