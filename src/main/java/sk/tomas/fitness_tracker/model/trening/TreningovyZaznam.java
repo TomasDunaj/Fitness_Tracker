@@ -1,6 +1,7 @@
 package sk.tomas.fitness_tracker.model.trening;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -24,7 +25,7 @@ public class TreningovyZaznam {
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "cvik_id")
-    @com.fasterxml.jackson.annotation.JsonIgnoreProperties("zaznamy")
+    @JsonIgnoreProperties("zaznamy")
     private Cvik cvik;
 
     @ManyToOne
