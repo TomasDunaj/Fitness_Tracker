@@ -7,11 +7,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import sk.tomas.fitness_tracker.model.SvalovaPartiaStatistika;
+import sk.tomas.fitness_tracker.model.enums.SvalovaPartia;
+import sk.tomas.fitness_tracker.model.repository.cvik.CvikRepository;
+import sk.tomas.fitness_tracker.model.repository.trening.TreningovyZaznamRepository;
 import sk.tomas.fitness_tracker.model.trening.Trening;
 import sk.tomas.fitness_tracker.service.TreningService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -19,9 +23,11 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:5173")
 public class TreningController {
     private final TreningService treningService;
+    private final TreningovyZaznamRepository treningovyZaznamRepository;
 
-    public TreningController(TreningService treningService) {
+    public TreningController(TreningService treningService, TreningovyZaznamRepository treningovyZaznamRepository) {
         this.treningService = treningService;
+        this.treningovyZaznamRepository = treningovyZaznamRepository;
     }
 
     @PostMapping
@@ -37,5 +43,10 @@ public class TreningController {
     @DeleteMapping("/{id}")
     public void vymazTrening(@PathVariable Long id) {
         this.treningService.vymazTrening(id);
+    }
+
+    @GetMapping("/statistiky/partie")
+    public List<SvalovaPartiaStatistika> getStatistikyPartii() {
+        return this.treningService.getSvalovaPartiaStatistiky();
     }
 }

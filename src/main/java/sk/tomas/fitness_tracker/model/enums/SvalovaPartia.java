@@ -7,5 +7,6 @@ public enum SvalovaPartia {
     RAMENA,
     BICEPS,
     TRICEPS,
-    BRUCHO;
+    BRUCHO,
+    RUKY;
 }

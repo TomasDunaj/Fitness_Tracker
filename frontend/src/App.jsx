@@ -3,10 +3,24 @@ import "./App.css";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie} from 'recharts';
 import logo from "./assets/Fitness_tracker_LOGO.png";
 
+const PREDDEFINOVANE_CVIKY = {
+    HRUDNIK: ["Benchpress", "Tlaky s jednoručkami na šikmej lavičke", "Rozpažovanie", "Kľuky na bradlách (Dips)"],
+    CHRBAT: ["Mŕtvy ťah", "Zťahovanie kladky na široko", "Príťahy jednoručky", "Zhyby"],
+    NOHY: ["Drepy", "Legpress", "Výpady", "Predkopávanie", "Zakopávanie"],
+    RAMENA: ["Tlaky nad hlavu s jednoručkami", "Military Press", "Upažovanie s jednoručkami"],
+    RUKY: ["Bicepsový zdvih s činkou", "Tricepsové sťahovanie kladky", "Kladivové zdvihy"]
+};
+
+const NAZVY_PARTII = {
+    HRUDNIK: "Hrudník",
+    CHRBAT: "Chrbát",
+    NOHY: "Nohy",
+    RAMENA: "Ramená",
+    RUKY: "Ruky"
+};
+
 function App() {
     const [treningy, setTreningy] = useState([]);
-
-    const [novyNazov, setNovyNazov] = useState("");
 
     const [activeTab, setActiveTab] = useState('trening');
 
@@ -15,6 +29,12 @@ function App() {
     const PRAZDNA_SERIA = {pocetOpakovani: "", vaha: ""}
 
     const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const [vybranaPartia, setVybranaPartia] = useState("HRUDNIK");
+
+    const [vybranyCvik, setVybranyCvik] = useState(PREDDEFINOVANE_CVIKY.HRUDNIK[0]);
+
+    const [vlastnyCvik, setVlastnyCvik] = useState("");
 
     const testData = [
         {trening: '1.7.', vaha: 60},
@@ -31,6 +51,10 @@ function App() {
         { name: 'Ramená', value: 2, fill: '#dc3545' },
         { name: 'Ruky', value: 3, fill: '#17a2b8' },
     ];
+
+    const [statistikyPartii, setStatistikyPartii] = useState([]);
+
+
 
     const [formularSerie, setFormularSerie] = useState([
         {id: 1, ...PRAZDNA_SERIA}
@@ -70,6 +94,17 @@ function App() {
                 })
                 .catch(error => console.error("Chyba pri načítaní histórie : ", error));
         }
+
+        if (activeTab === 'statistiky') {
+            fetch('http://localhost:8080/api/treningy/statistiky/partie')
+            .then(response => response.json())
+            .then(data => {
+                console.log("Statistiky z backendu : ", data);
+                setStatistikyPartii(data);
+            })
+                .catch(error => console.error("Chyba pri načítaní štatistík : ", error));
+
+        }
     }, [activeTab]);
 
     const prepniStav = (idZaznamu) => {
@@ -104,7 +139,12 @@ function App() {
     };
 
     const pridajCvik = () => {
-        if (novyNazov.trim() === "") return;
+        const finalnyNazov = vybranyCvik === "VLASTNY" ? vlastnyCvik.trim() : vybranyCvik;
+
+        if (!finalnyNazov || finalnyNazov === "") {
+            alert("Zadaj alebo vyber názov cviku!");
+            return;
+        }
 
         const vygenerovaneSerie = formularSerie.map(s => ({
             vaha: s.vaha,
@@ -119,8 +159,8 @@ function App() {
             zaznamy: [
                 {
                     cvik: {
-                        nazovCviku: novyNazov,
-                        svalovaPartia: "NOHY"
+                        nazovCviku: finalnyNazov,
+                        svalovaPartia: vybranaPartia
                     },
                     serie: vygenerovaneSerie
                 }
@@ -140,7 +180,8 @@ function App() {
                     const novyZaznam = ulozenyTreningZoSpringu.zaznamy[0];
                     setTreningy([...treningy, novyZaznam]);
                 }
-                setNovyNazov("");
+                setVlastnyCvik("");
+                setVybranyCvik(PREDDEFINOVANE_CVIKY[vybranaPartia][0]);
                 setFormularSerie([
                     {id: 1, ...PRAZDNA_SERIA}
                 ]);
@@ -283,12 +324,46 @@ function App() {
 
                                 <div className="form-grid">
                                     <div className="form-group row-span">
-                                        <input
-                                            type="text"
-                                            placeholder="Názov cviku"
-                                            value={novyNazov}
-                                            onChange={(e) => setNovyNazov(e.target.value)}
-                                        />
+                                        <label className="form-label label-spacing"> Svalová partia : </label>
+                                        <select
+                                            value={vybranaPartia}
+                                            onChange={(e) => {
+                                                const novaPartia = e.target.value;
+                                                setVybranaPartia(novaPartia)
+                                                setVybranyCvik(PREDDEFINOVANE_CVIKY[novaPartia][0]);
+                                            }}
+                                            className="form-select"
+                                        >
+                                            {Object.keys(PREDDEFINOVANE_CVIKY).map((partia) => (
+                                                <option key={partia} value={partia}>
+                                                    {NAZVY_PARTII[partia]}
+                                                </option>
+                                                ))}
+                                        </select>
+
+                                        <label className="form-label label-spacing">Cvik : </label>
+                                        <select
+                                            value={vybranyCvik}
+                                            onChange={(e) => setVybranyCvik(e.target.value)}
+                                            className="form-select"
+                                            >
+                                            {PREDDEFINOVANE_CVIKY[vybranaPartia].map((cvik) => (
+                                                <option key={cvik} value={cvik}>
+                                                    {cvik}
+                                                </option>
+                                            ))}
+                                            <option value="VLASTNY">-- Iný/Vlastný --</option>
+                                        </select>
+
+                                        {vybranyCvik === "VLASTNY" && (
+                                            <input
+                                                type="text"
+                                                placeholder="Napíš názov vlastného cviku"
+                                                value={vlastnyCvik}
+                                                onChange={(e) => setVlastnyCvik(e.target.value)}
+                                                className="form-input-vlastny"
+                                                />
+                                        )}
                                     </div>
 
                                     <div className="form-series-list">
@@ -422,7 +497,7 @@ function App() {
                                     <ResponsiveContainer>
                                         <PieChart>
                                             <Pie
-                                                data={svalovePartieData}
+                                                data={statistikyPartii}
                                                 cx="50%"
                                                 cy="50%"
                                                 innerRadius={35}
