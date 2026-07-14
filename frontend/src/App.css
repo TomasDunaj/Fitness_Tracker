@@ -129,6 +129,7 @@ h1 {
     margin-top: 2.5rem;
     font-size: 1.1rem;
     text-align: center;
+    filter: drop-shadow(0 0 8px rgba(0, 123, 255, 0.6));
 }
 
 .dashboard-grid {
@@ -162,12 +163,12 @@ table {
     overflow: hidden;
     border: 1px solid var(--border-color);
     table-layout: auto;
+    margin-left: -1rem;
 }
 
 th, td {
     padding: 16px;
-    text-align: left;
-    vertical-align: middle;
+    text-align: center;
 }
 
 th:nth-child(1), td:nth-child(1) {
@@ -185,7 +186,7 @@ th:nth-child(3), td:nth-child(3) {
 }
 
 th:nth-child(4), td:nth-child(4) {
-    width: 190px;
+    width: 180px;
     text-align: center;
 }
 
@@ -327,6 +328,7 @@ input:focus {
 .form-series-list {
     max-height: 12rem;
     overflow-y: auto;
+    overflow-x: hidden;
     padding-right: 1.5rem;
     box-sizing: border-box;
 }
@@ -425,3 +427,286 @@ input[type="number"] {
     max-width: 800px;
     margin: 0 auto;
 }
+
+/* ===========================
+   ŠTÝLY PRE SEKCIU ŠTATISTIKY
+   =========================== */
+
+.statistiky-page {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+}
+
+.sidebar-stats {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.sidebar-stats h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 8px;
+}
+
+.stats-top-row {
+    width: 100%;
+}
+
+.stats-bottom-row {
+    display: flex;
+    gap: 20px;
+    width: 100%;
+}
+
+.pie-chart-box {
+    flex: 1 1 50%;
+    height: 200px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+}
+
+.records-card-wrapper {
+    flex: 1 1 50%;
+    display: flex;
+    height: 200px;
+    box-sizing: border-box;
+}
+
+.records-card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    background: #1e1e1e;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px;
+    width: 100%;            /* Roztiahne sa na celých 50% svojho rodiča */
+    height: 100%;           /* Vyplní celú výšku (200px) */
+    cursor: pointer;
+    transition: transform 0.2s, background 0.2s, border-color 0.2s;
+    box-sizing: border-box;
+}
+
+.records-card:hover {
+    transform: translateY(-3px);
+    background: #252525;
+    border-color: var(--accent-color);
+    box-shadow: 0 5px 15px rgba(59, 130, 246, 0.2);
+}
+
+.records-card-icon {
+    font-size: 45px;
+}
+
+.records-card-info h4 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+    color: var(--text-main);
+}
+
+.records-card-info p {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+@media (max-width: 800px) {
+    .stats-bottom-row {
+        flex-direction: column;
+    }
+    .pie-chart-box, .records-card-wrapper {
+        flex: 1 1 100%;
+    }
+}
+
+/* =====
+   MODAL
+   =====
+*/
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.modal-content {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 30px;
+    width: 90%;
+    max-width: 400px;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    color: var(--text-main);
+    animation: fadeInModal 0.2s ease-out;
+}
+
+@keyframes fadeInModal {
+    from {
+        transform: scale(0.95);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.modal-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 24px;
+    cursor: pointer;
+    transition: color 0.2s;
+    line-height: 1;
+}
+
+.modal-close:hover {
+    color: var(--text-main);
+}
+
+.modal-content h2 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.records-list {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.record-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.record-item:last-child {
+    border-bottom: none;
+}
+
+.record-item span {
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.record-item strong {
+    color: var(--accent-color);
+    font-size: 1.2rem;
+}
+
+.statistiky-page,
+.history-container {
+    padding-left: 5rem;
+}
+
+.history-container {
+    height: 100vh;
+    overflow-y: auto;
+
+}
+
+.history-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.history-container::-webkit-scrollbar-track {
+    background: var(--bg-primary);
+}
+
+.history-container::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 4px;
+}
+
+.history-container::-webkit-scrollbar-thumb:hover {
+    background: var(--text-muted);
+}
+
+#root,
+.app-container,
+.main-content {
+    background-color: #121214 !important;
+    background: #121214 !important;
+    border: none !important;
+    border-right: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+h1, .subtitle {
+    animation: fadeInUp 0.6s ease-out forwards;
+}
+
+table {
+    animation: fadeInUp 0.6s ease-out 0.2s forwards;
+    opacity: 0;
+}
+
+.add-exercise-box {
+    animation: fadeInUp 0.6s ease-out 0.35s forwards;
+    opacity: 0;
+}
+
+.app-logo {
+    width: 14rem;
+    height: auto;
+    display: block;
+    margin-right: 1rem;
+
+    filter: drop-shadow(0 0 12px rgba(59, 130, 246, 0.45));
+}
+
+.sidebar-logo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+
+
