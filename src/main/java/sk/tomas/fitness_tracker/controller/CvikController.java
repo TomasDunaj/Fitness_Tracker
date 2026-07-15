@@ -1,5 +1,6 @@
 package sk.tomas.fitness_tracker.controller;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/cviky")
+@CrossOrigin(origins = "http://localhost:5173")
 public class CvikController {
 
     private final CvikService cvikService;

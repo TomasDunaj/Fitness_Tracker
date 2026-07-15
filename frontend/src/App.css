@@ -323,7 +323,7 @@ input:focus {
     color: var(--text-muted);
     font-size: 1.2rem;
     margin-bottom: 1.2rem;
-    margin-top: 1rem;
+    margin-top: 0.5rem;
     margin-left: 1.5rem;
 }
 
@@ -453,13 +453,55 @@ input[type="number"] {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
 
-.sidebar-stats h3 {
-    margin-top: 0;
+/* Hlavička grafu s dropdownom vedľa seba */
+.stats-header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 15px;
-    font-size: 1.1rem;
-    color: var(--text-muted);
     border-bottom: 1px solid var(--border-color);
     padding-bottom: 8px;
+}
+
+.stats-header-container h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: var(--text-muted);
+}
+
+/* Nový štýlový dropdown pre graf */
+.stats-dropdown {
+    width: auto;
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-primary);
+    color: var(--text-main);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+}
+
+.stats-dropdown:focus {
+    outline: none;
+    border-color: var(--accent-color);
+}
+
+/* Obal a fixná výška pre čiarový graf */
+.chart-wrapper {
+    width: 100%;
+    height: 250px;
+}
+
+/* Hláška pre cvik bez záznamov */
+.no-data-message {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    color: var(--text-muted);
+    font-size: 0.95rem;
 }
 
 .stats-top-row {
@@ -485,6 +527,16 @@ input[type="number"] {
     flex-direction: column;
 }
 
+/* Zbytok tvojich pôvodných štýlov pre koláč a rekordy zostáva nezmenený */
+.pie-chart-box h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 8px;
+}
+
 .records-card-wrapper {
     flex: 1 1 50%;
     display: flex;
@@ -501,8 +553,8 @@ input[type="number"] {
     border: 1px solid var(--border-color);
     border-radius: 12px;
     padding: 20px;
-    width: 100%;            /* Roztiahne sa na celých 50% svojho rodiča */
-    height: 100%;           /* Vyplní celú výšku (200px) */
+    width: 100%;
+    height: 100%;
     cursor: pointer;
     transition: transform 0.2s, background 0.2s, border-color 0.2s;
     box-sizing: border-box;

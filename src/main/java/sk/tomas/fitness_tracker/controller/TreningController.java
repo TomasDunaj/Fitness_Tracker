@@ -7,15 +7,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import sk.tomas.fitness_tracker.model.SvalovaPartiaStatistika;
-import sk.tomas.fitness_tracker.model.enums.SvalovaPartia;
-import sk.tomas.fitness_tracker.model.repository.cvik.CvikRepository;
+import sk.tomas.fitness_tracker.dto.CvikProgresStatistika;
+import sk.tomas.fitness_tracker.dto.SvalovaPartiaStatistika;
 import sk.tomas.fitness_tracker.model.repository.trening.TreningovyZaznamRepository;
 import sk.tomas.fitness_tracker.model.trening.Trening;
 import sk.tomas.fitness_tracker.service.TreningService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -48,5 +47,10 @@ public class TreningController {
     @GetMapping("/statistiky/partie")
     public List<SvalovaPartiaStatistika> getStatistikyPartii() {
         return this.treningService.getSvalovaPartiaStatistiky();
+    }
+
+    @GetMapping("/statistiky/progres")
+    public List<CvikProgresStatistika> getProgresCviku(@RequestParam Long cvikId) {
+        return this.treningService.najdiZaznamyPreCvik(cvikId);
     }
 }

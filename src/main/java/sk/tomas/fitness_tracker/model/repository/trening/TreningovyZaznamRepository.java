@@ -8,7 +8,12 @@ import java.util.List;
 
 public interface TreningovyZaznamRepository extends JpaRepository<TreningovyZaznam, Long> {
     List<TreningovyZaznam> findByCvikId(Long cvikId);
+
     List<TreningovyZaznam> findAllByOrderByIdDesc();
+
     @Query("SELECT z.cvik.svalovaPartia, COUNT(z) FROM TreningovyZaznam z WHERE z.cvik.svalovaPartia IS NOT NULL GROUP BY z.cvik.svalovaPartia")
     List<Object[]> spocitajZaznamyPodlaPartii();
+
+    @Query("SELECT tz FROM TreningovyZaznam tz " + "JOIN tz.trening t " + "WHERE tz.cvik.id = :cvikId " + "ORDER BY t.datum ASC")
+    List<TreningovyZaznam> najdiZaznamyPreCvikSorted(Long cvikId);
 }

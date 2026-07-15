@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import "./App.css";
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie} from 'recharts';
+import {LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie} from 'recharts';
 import logo from "./assets/Fitness_tracker_LOGO.png";
 
 const PREDDEFINOVANE_CVIKY = {
@@ -19,6 +19,7 @@ const NAZVY_PARTII = {
     RUKY: "Ruky"
 };
 
+
 function App() {
     const [treningy, setTreningy] = useState([]);
 
@@ -36,25 +37,11 @@ function App() {
 
     const [vlastnyCvik, setVlastnyCvik] = useState("");
 
-    const testData = [
-        {trening: '1.7.', vaha: 60},
-        {trening: '4.7.', vaha: 62.5},
-        {trening: '8.7.', vaha: 65},
-        {trening: '11.7.', vaha: 65},
-        {trening: '13.7.', vaha: 67.5},
-    ];
-
-    const svalovePartieData = [
-        { name: 'Nohy', value: 4, fill: '#007bff' },
-        { name: 'Hrudník', value: 3, fill: '#28a745' },
-        { name: 'Chrbát', value: 5, fill: '#ffc107' },
-        { name: 'Ramená', value: 2, fill: '#dc3545' },
-        { name: 'Ruky', value: 3, fill: '#17a2b8' },
-    ];
-
     const [statistikyPartii, setStatistikyPartii] = useState([]);
 
-
+    const [databazoveCviky, setDatabazoveCviky] = useState([]);
+    const [vybranyCvikProgresId, setVybranyCvikProgresId] = useState('');
+    const [progresData, setProgresData] = useState([]);
 
     const [formularSerie, setFormularSerie] = useState([
         {id: 1, ...PRAZDNA_SERIA}
@@ -97,15 +84,47 @@ function App() {
 
         if (activeTab === 'statistiky') {
             fetch('http://localhost:8080/api/treningy/statistiky/partie')
-            .then(response => response.json())
-            .then(data => {
-                console.log("Statistiky z backendu : ", data);
-                setStatistikyPartii(data);
-            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Statistiky z backendu : ", data);
+                    setStatistikyPartii(data);
+                })
                 .catch(error => console.error("Chyba pri načítaní štatistík : ", error));
 
         }
     }, [activeTab]);
+
+    useEffect(() => {
+        if (activeTab === 'statistiky') {
+            fetch('http://localhost:8080/api/cviky')
+                .then(response => response.json())
+                .then(data => {
+                    setDatabazoveCviky(data);
+                    if (data.length > 0) {
+                        setVybranyCvikProgresId(data[0].id)
+                    }
+                })
+                .catch(error => console.error("Chyba pri načítaní cvikov pre graf : ", error));
+        }
+    }, [activeTab]);
+
+    useEffect(() => {
+        if (activeTab === 'statistiky' && vybranyCvikProgresId) {
+            fetch(`http://localhost:8080/api/treningy/statistiky/progres?cvikId=${vybranyCvikProgresId}`)
+                .then(response => response.json())
+                .then(data => {
+                    const formatovaneData = data.map(item => ({
+                        ...item,
+                        zobrazovanyDatum: new Date(item.datum).toLocaleDateString('sk-SK', {
+                            day: '2-digit',
+                            month: '2-digit'
+                        })
+                    }));
+                    setProgresData(formatovaneData);
+                })
+                .catch(error => console.error("Chyba pri načítaní progresu cviku: ", error));
+        }
+    }, [vybranyCvikProgresId, activeTab]);
 
     const prepniStav = (idZaznamu) => {
         const povodnyStav = [...treningy];
@@ -230,7 +249,7 @@ function App() {
 
             <aside className="sidebar">
                 <div className="sidebar-logo">
-                    <img src={logo} className="app-logo" alt="Fitness Tracker Logo" />
+                    <img src={logo} className="app-logo" alt="Fitness Tracker Logo"/>
                 </div>
 
                 <nav className="sidebar-menu">
@@ -338,7 +357,7 @@ function App() {
                                                 <option key={partia} value={partia}>
                                                     {NAZVY_PARTII[partia]}
                                                 </option>
-                                                ))}
+                                            ))}
                                         </select>
 
                                         <label className="form-label label-spacing">Cvik : </label>
@@ -346,7 +365,7 @@ function App() {
                                             value={vybranyCvik}
                                             onChange={(e) => setVybranyCvik(e.target.value)}
                                             className="form-select"
-                                            >
+                                        >
                                             {PREDDEFINOVANE_CVIKY[vybranaPartia].map((cvik) => (
                                                 <option key={cvik} value={cvik}>
                                                     {cvik}
@@ -362,7 +381,7 @@ function App() {
                                                 value={vlastnyCvik}
                                                 onChange={(e) => setVlastnyCvik(e.target.value)}
                                                 className="form-input-vlastny"
-                                                />
+                                            />
                                         )}
                                     </div>
 
@@ -462,38 +481,71 @@ function App() {
                         <h2>📊 Štatistiky</h2>
                         <p>Grafy a progres tvojich výkonov.</p>
 
-                        {/* 1. Horná polovica: Čiarový graf na celú šírku */}
                         <div className="stats-top-row">
                             <div className="sidebar-stats">
-                                <h3>Tvoj progres</h3>
-                                <div style={{width: '100%', height: 250}}>
-                                    <ResponsiveContainer>
-                                        <LineChart data={testData} margin={{top: 10, right: 20, left: -20, bottom: 0}}>
-                                            <XAxis dataKey="trening" stroke="#888888" fontSize={12}/>
-                                            <YAxis stroke="#888888" fontSize={12}/>
-                                            <Tooltip
-                                                contentStyle={{backgroundColor: '#222', borderColor: '#444', color: '#fff'}}
-                                            />
-                                            <Line
-                                                type="monotone"
-                                                dataKey="vaha"
-                                                stroke="#007bff"
-                                                strokeWidth={3}
-                                                activeDot={{r: 6}}
-                                            />
-                                        </LineChart>
-                                    </ResponsiveContainer>
+                                <div className="stats-header-container">
+
+                                    <h3>Tvoj progres</h3>
+
+                                    {databazoveCviky.length > 0 && (
+                                        <select
+                                            value={vybranyCvikProgresId}
+                                            onChange={(e) => setVybranyCvikProgresId(e.target.value)}
+                                            className="stats-dropdown"
+                                        >
+                                            {databazoveCviky.map(cvik => (
+                                                <option key={cvik.id} value={cvik.id}>
+                                                    {cvik.nazovCviku} {`(${NAZVY_PARTII[cvik.svalovaPartia]})`}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    )}
+                                </div>
+
+                                <div className="chart-wrapper">
+                                    {progresData.length > 0 ? (
+                                        <ResponsiveContainer>
+                                            <LineChart data={progresData}
+                                                       margin={{top: 10, right: 20, left: -20, bottom: 0}}>
+                                                <XAxis dataKey="zobrazovanyDatum" stroke="#888888" fontSize={12}/>
+                                                <YAxis stroke="#888888" fontSize={12} unit=" kg"/>
+                                                <Tooltip
+                                                    contentStyle={{
+                                                        backgroundColor: '#222',
+                                                        borderColor: '#444',
+                                                        color: '#fff'
+                                                    }}
+                                                    formatter={value => [`${value} kg`, 'Max. váha']}
+                                                />
+                                                <Line
+                                                    type="monotone"
+                                                    dataKey="vaha"
+                                                    stroke="#007bff"
+                                                    strokeWidth={3}
+                                                    activeDot={{r: 6}}
+                                                />
+                                            </LineChart>
+                                        </ResponsiveContainer>
+                                    ) : (
+                                        <div className="no-data-message">
+                                            Pre tento cvik zatiaľ nemáš zapísané žiadne tréningy.
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </div>
 
-                        {/* 2. Spodná polovica: Rozdelená 50/50 na Pie Chart a Kartičku s PRs */}
                         <div className="stats-bottom-row">
 
-                            {/* ĽAVÁ STRANA: Koláčový graf */}
                             <div className="sidebar-stats pie-chart-box">
                                 <h3>Zastúpenie partií</h3>
-                                <div style={{width: '100%', height: 120, display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                                <div style={{
+                                    width: '100%',
+                                    height: 120,
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center'
+                                }}>
                                     <ResponsiveContainer>
                                         <PieChart>
                                             <Pie
@@ -506,7 +558,11 @@ function App() {
                                                 dataKey="value"
                                             />
                                             <Tooltip
-                                                contentStyle={{backgroundColor: '#222', borderColor: '#444', color: '#fff'}}
+                                                contentStyle={{
+                                                    backgroundColor: '#222',
+                                                    borderColor: '#444',
+                                                    color: '#fff'
+                                                }}
                                             />
                                         </PieChart>
                                     </ResponsiveContainer>

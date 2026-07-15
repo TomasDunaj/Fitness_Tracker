@@ -1,4 +1,4 @@
-package sk.tomas.fitness_tracker.model;
+package sk.tomas.fitness_tracker.dto;
 
 public class SvalovaPartiaStatistika {
     private String name;

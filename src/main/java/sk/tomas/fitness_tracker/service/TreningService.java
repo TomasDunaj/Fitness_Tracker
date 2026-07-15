@@ -2,14 +2,18 @@ package sk.tomas.fitness_tracker.service;
 
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
-import sk.tomas.fitness_tracker.model.SvalovaPartiaStatistika;
+import sk.tomas.fitness_tracker.dto.CvikProgresStatistika;
+import sk.tomas.fitness_tracker.dto.SvalovaPartiaStatistika;
+import sk.tomas.fitness_tracker.model.cvik.Cvik;
 import sk.tomas.fitness_tracker.model.enums.SvalovaPartia;
+import sk.tomas.fitness_tracker.model.repository.cvik.CvikRepository;
 import sk.tomas.fitness_tracker.model.repository.trening.TreningovyZaznamRepository;
 import sk.tomas.fitness_tracker.model.trening.Seria;
 import sk.tomas.fitness_tracker.model.trening.Trening;
 import sk.tomas.fitness_tracker.model.repository.trening.TreningRepository;
 import sk.tomas.fitness_tracker.model.trening.TreningovyZaznam;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,10 +22,12 @@ public class TreningService {
 
     private final TreningRepository treningRepository;
     private final TreningovyZaznamRepository treningovyZaznamRepository;
+    private final CvikRepository cvikRepository;
 
-    public TreningService(TreningRepository treningRepository, TreningovyZaznamRepository treningovyZaznamRepository) {
+    public TreningService(TreningRepository treningRepository, TreningovyZaznamRepository treningovyZaznamRepository, CvikRepository cvikRepository) {
         this.treningRepository = treningRepository;
         this.treningovyZaznamRepository = treningovyZaznamRepository;
+        this.cvikRepository = cvikRepository;
     }
 
     @Transactional
@@ -29,6 +35,18 @@ public class TreningService {
         if (trening.getZaznamy() != null) {
             for (TreningovyZaznam zaznam : trening.getZaznamy()) {
                 zaznam.setTrening(trening);
+
+                Cvik cvikZFrontendu = zaznam.getCvik();
+
+                Cvik finalnyCvik = cvikRepository.findByNazovCviku(cvikZFrontendu.getNazovCviku())
+                        .orElseGet(() -> {
+                            Cvik novyCvik = new Cvik();
+                            novyCvik.setNazovCviku(cvikZFrontendu.getNazovCviku());
+                            novyCvik.setSvalovaPartia(cvikZFrontendu.getSvalovaPartia());
+                            return cvikRepository.save(novyCvik);
+                        });
+
+                zaznam.setCvik(finalnyCvik);
 
                 if(zaznam.getSerie() != null) {
                     for (Seria seria : zaznam.getSerie()) {
@@ -86,6 +104,30 @@ public class TreningService {
             }
 
             statistiky.add(new SvalovaPartiaStatistika(slovenskyNazov, pocet, farba));
+        }
+
+        return statistiky;
+    }
+
+    public List<CvikProgresStatistika> najdiZaznamyPreCvik(Long cvikId) {
+        List<TreningovyZaznam> zaznamy = treningovyZaznamRepository.najdiZaznamyPreCvikSorted(cvikId);
+        List<CvikProgresStatistika> statistiky = new ArrayList<>();
+
+        for (TreningovyZaznam zaznam : zaznamy) {
+            LocalDate datum = zaznam.getTrening().getDatum();
+            double maxVaha = 0;
+
+            if (zaznam.getSerie() != null) {
+                for (Seria seria : zaznam.getSerie()) {
+                    if (seria.getVaha() > maxVaha) {
+                        maxVaha = seria.getVaha();
+                    }
+                }
+            }
+
+            if (maxVaha > 0) {
+                statistiky.add(new CvikProgresStatistika(datum, maxVaha));
+            }
         }
 
         return statistiky;
