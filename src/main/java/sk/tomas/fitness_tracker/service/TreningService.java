@@ -15,7 +15,10 @@ import sk.tomas.fitness_tracker.model.trening.TreningovyZaznam;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class TreningService {
@@ -111,7 +114,8 @@ public class TreningService {
 
     public List<CvikProgresStatistika> najdiZaznamyPreCvik(Long cvikId) {
         List<TreningovyZaznam> zaznamy = treningovyZaznamRepository.najdiZaznamyPreCvikSorted(cvikId);
-        List<CvikProgresStatistika> statistiky = new ArrayList<>();
+
+        Map<LocalDate, Double> maxVahaPoDnoch = new HashMap<>();
 
         for (TreningovyZaznam zaznam : zaznamy) {
             LocalDate datum = zaznam.getTrening().getDatum();
@@ -126,9 +130,20 @@ public class TreningService {
             }
 
             if (maxVaha > 0) {
-                statistiky.add(new CvikProgresStatistika(datum, maxVaha));
+                double doterajsieMaximum = maxVahaPoDnoch.getOrDefault(datum, 0.0);
+
+                if (maxVaha > doterajsieMaximum) {
+                    maxVahaPoDnoch.put(datum, maxVaha);
+                }
             }
         }
+
+        List<CvikProgresStatistika> statistiky = new ArrayList<>();
+        for(Map.Entry<LocalDate, Double> entry : maxVahaPoDnoch.entrySet()) {
+            statistiky.add(new CvikProgresStatistika(entry.getKey(), entry.getValue()));
+        }
+
+        statistiky.sort(Comparator.comparing(CvikProgresStatistika::getDatum));
 
         return statistiky;
     }
