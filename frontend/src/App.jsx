@@ -126,6 +126,7 @@ function App() {
         }
     }, [vybranyCvikProgresId, activeTab]);
 
+
     const prepniStav = (idZaznamu) => {
         const povodnyStav = [...treningy];
 
@@ -209,10 +210,24 @@ function App() {
     }
 
     const vymazCvik = (idCviku) => {
-        const upraveneTreningy = treningy.filter((t) => t.id !== idCviku);
 
-        setTreningy(upraveneTreningy);
-    }
+
+        fetch(`http://localhost:8080/api/zaznamy/${idCviku}`, {
+            method: "DELETE"
+        })
+            .then(response => {
+                if (response.ok) {
+                    const upraveneTreningy = treningy.filter((t) => t.id !== idCviku);
+                    setTreningy(upraveneTreningy);
+                } else {
+                    alert("Backend vrátil chybu, cvik sa nepodarilo vymazať.");
+                }
+            })
+            .catch((error) => {
+                console.error("Chyba siete : ", error);
+                alert("Nepodarilo sa spojiť so serverom.")
+            });
+    };
 
     const pridajSeriuDoFormulara = () => {
         setFormularSerie([
