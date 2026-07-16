@@ -1,12 +1,18 @@
 package sk.tomas.fitness_tracker.service;
 
 import org.springframework.stereotype.Service;
+import sk.tomas.fitness_tracker.dto.OsobnyRekord;
 import sk.tomas.fitness_tracker.model.cvik.Cvik;
 import sk.tomas.fitness_tracker.model.repository.cvik.CvikRepository;
+import sk.tomas.fitness_tracker.model.trening.Seria;
 import sk.tomas.fitness_tracker.model.trening.TreningovyZaznam;
 import sk.tomas.fitness_tracker.model.repository.trening.TreningovyZaznamRepository;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class TreningovyZaznamService {
@@ -72,6 +78,33 @@ public class TreningovyZaznamService {
         zaznam.setSplnene(!aktualnyStav);
 
         return treningovyZaznamRepository.save(zaznam);
+    }
 
+    public List<OsobnyRekord> dajOsobneRekordy() {
+        List<TreningovyZaznam> vsetkyZaznamy = this.treningovyZaznamRepository.findAll();
+
+        Map<String, Optional<TreningovyZaznam>> maximaPodlaCviku = vsetkyZaznamy.stream()
+                .collect(Collectors.groupingBy(
+                        zaznam -> zaznam.getCvik().getNazovCviku(),
+                        Collectors.maxBy(Comparator.comparingDouble(this::ziskajMaxVahuZoZaznamu))
+                ));
+
+        return maximaPodlaCviku.entrySet().stream()
+                .filter(entry -> entry.getValue().isPresent())
+                .map(entry -> {
+                    TreningovyZaznam najlepsiZaznam = entry.getValue().get();
+                    double maxVaha = ziskajMaxVahuZoZaznamu(najlepsiZaznam);
+
+                    return new OsobnyRekord(entry.getKey(), maxVaha);
+                })
+                .collect(Collectors.toList());
+
+    }
+
+    private double ziskajMaxVahuZoZaznamu(TreningovyZaznam zaznam) {
+        return zaznam.getSerie().stream()
+                .mapToDouble(Seria::getVaha)
+                .max()
+                .orElse(0);
     }
 }

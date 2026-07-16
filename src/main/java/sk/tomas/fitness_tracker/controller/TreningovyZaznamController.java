@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import sk.tomas.fitness_tracker.dto.OsobnyRekord;
 import sk.tomas.fitness_tracker.model.trening.TreningovyZaznam;
 import sk.tomas.fitness_tracker.service.TreningovyZaznamService;
 
@@ -51,5 +52,10 @@ public class TreningovyZaznamController {
     @GetMapping("/cvik/{cvikId}")
     public List<TreningovyZaznam> getZaznamyCviku(@PathVariable Long cvikId) {
         return this.treningovyZaznamService.getZaznamyPreCvik(cvikId);
+    }
+
+    @GetMapping("/osobne-rekordy")
+    public List<OsobnyRekord> getOsobneRekordy() {
+        return this.treningovyZaznamService.dajOsobneRekordy();
     }
 }

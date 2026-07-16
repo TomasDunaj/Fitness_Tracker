@@ -43,6 +43,8 @@ function App() {
     const [vybranyCvikProgresId, setVybranyCvikProgresId] = useState('');
     const [progresData, setProgresData] = useState([]);
 
+    const [osobneRekordy, setOsobneRekordy] = useState([]);
+
     const [formularSerie, setFormularSerie] = useState([
         {id: 1, ...PRAZDNA_SERIA}
     ]);
@@ -258,6 +260,16 @@ function App() {
             s.id === id ? {...s, [pole]: upraveneCislo} : s
         ));
     }
+
+    const nacitajOsobneRekordy = async () => {
+        setIsModalOpen(true);
+        try {
+            const response = await fetch('http://localhost:8080/api/zaznamy/osobne-rekordy');            const data = await response.json();
+            setOsobneRekordy(data);
+        } catch (error) {
+            console.error("Chyba pri načítaní osobných rekordov : ", error)
+        }
+    };
 
     return (
         <div className="app-container">
@@ -585,7 +597,7 @@ function App() {
                             </div>
 
                             <div className="records-card-wrapper">
-                                <div className="records-card" onClick={() => setIsModalOpen(true)}>
+                                <div className="records-card" onClick={() => nacitajOsobneRekordy()}>
                                     <div className="records-card-icon">🏆</div>
                                     <div className="records-card-info">
                                         <h4>Osobné rekordy</h4>
@@ -603,18 +615,12 @@ function App() {
                                     <h2>🏆 Tvoje osobné rekordy</h2>
 
                                     <div className="records-list">
-                                        <div className="record-item">
-                                            <span>Benchpress:</span>
-                                            <strong>85 kg</strong>
-                                        </div>
-                                        <div className="record-item">
-                                            <span>Drep:</span>
-                                            <strong>110 kg</strong>
-                                        </div>
-                                        <div className="record-item">
-                                            <span>Mŕtvy ťah:</span>
-                                            <strong>140 kg</strong>
-                                        </div>
+                                        {osobneRekordy.map((rekord, index) => (
+                                            <div className="record-item" key={rekord.nazovCviku || index}>
+                                                <span>{index+1}. {rekord.nazovCviku} : </span>
+                                                <strong>{rekord.vaha}</strong>
+                                            </div>
+                                        ))}
                                     </div>
                                 </div>
                             </div>
