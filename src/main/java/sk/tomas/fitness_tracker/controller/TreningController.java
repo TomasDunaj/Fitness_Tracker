@@ -22,11 +22,9 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:5173")
 public class TreningController {
     private final TreningService treningService;
-    private final TreningovyZaznamRepository treningovyZaznamRepository;
 
-    public TreningController(TreningService treningService, TreningovyZaznamRepository treningovyZaznamRepository) {
+    public TreningController(TreningService treningService) {
         this.treningService = treningService;
-        this.treningovyZaznamRepository = treningovyZaznamRepository;
     }
 
     @PostMapping

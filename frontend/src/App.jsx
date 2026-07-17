@@ -264,7 +264,8 @@ function App() {
     const nacitajOsobneRekordy = async () => {
         setIsModalOpen(true);
         try {
-            const response = await fetch('http://localhost:8080/api/zaznamy/osobne-rekordy');            const data = await response.json();
+            const response = await fetch('http://localhost:8080/api/zaznamy/osobne-rekordy');
+            const data = await response.json();
             setOsobneRekordy(data);
         } catch (error) {
             console.error("Chyba pri načítaní osobných rekordov : ", error)
