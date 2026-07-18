@@ -4,11 +4,51 @@ import {LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, P
 import logo from "./assets/Fitness_tracker_LOGO.png";
 
 const PREDDEFINOVANE_CVIKY = {
-    HRUDNIK: ["Benchpress", "Tlaky s jednoručkami na šikmej lavičke", "Rozpažovanie", "Kľuky na bradlách (Dips)"],
-    CHRBAT: ["Mŕtvy ťah", "Zťahovanie kladky na široko", "Príťahy jednoručky", "Zhyby"],
-    NOHY: ["Drepy", "Legpress", "Výpady", "Predkopávanie", "Zakopávanie"],
-    RAMENA: ["Tlaky nad hlavu s jednoručkami", "Military Press", "Upažovanie s jednoručkami"],
-    RUKY: ["Bicepsový zdvih s činkou", "Tricepsové sťahovanie kladky", "Kladivové zdvihy"]
+    HRUDNIK: [
+        "Benchpress",
+        "Tlaky s jednoručkami na šikmej lavičke",
+        "Rozpažovanie",
+        "Kľuky na bradlách",
+        "Tlaky na protismerných kladkách",
+        "Pec Deck",
+        "Tlaky s jednoručkami na rovnej lavičke"
+    ],
+    CHRBAT: [
+        "Mŕtvy ťah",
+        "Zťahovanie kladky na široko",
+        "Príťahy jednoručky",
+        "Zhyby",
+        "Príťahy veľkej činky v predklone",
+        "Veslovanie na spodnej kladke",
+        "Príťahy T-tyče"
+    ],
+    NOHY: [
+        "Drepy",
+        "Legpress",
+        "Výpady",
+        "Predkopávanie",
+        "Zakopávanie",
+        "Rumunský mŕtvy ťah",
+        "Výpony na lýtka v stoji",
+        "Hip Thrust"
+    ],
+    RAMENA: [
+        "Tlaky nad hlavu s jednoručkami",
+        "Military Press",
+        "Upažovanie s jednoručkami",
+        "Predpažovanie s veľkou činkou",
+        "Obrátený Pec Deck",
+        "Príťahy činky k brade"
+    ],
+    RUKY: [
+        "Bicepsový zdvih s činkou",
+        "Tricepsové sťahovanie kladky",
+        "Kladivové zdvihy",
+        "Bicepsový zdvih na Scottovej lavičke",
+        "Francúzsky tlak s EZ činkou",
+        "Tricepsové kľuky na lavičke",
+        "Bicepsový zdvih s jednoručkami v sede"
+    ]
 };
 
 const NAZVY_PARTII = {
