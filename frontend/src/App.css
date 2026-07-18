@@ -163,7 +163,6 @@ table {
     overflow: hidden;
     border: 1px solid var(--border-color);
     table-layout: auto;
-    margin-left: -1rem;
 }
 
 th, td {
@@ -214,6 +213,29 @@ tbody tr:last-child td {
 
 tbody tr:hover td {
     background-color: rgba(255, 255, 255, 0.01);
+}
+
+.table-div {
+    display: block !important;
+    overflow-y: auto !important;
+    max-height: 26rem !important;
+}
+
+.table-div::-webkit-scrollbar {
+    width: 8px;
+}
+
+.table-div::-webkit-scrollbar-track {
+    background: var(--bg-primary);
+}
+
+.table-div::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 4px;
+}
+
+.table-div::-webkit-scrollbar-thumb:hover {
+    background: var(--text-muted);
 }
 
 .status-todo, .status-done {
@@ -453,7 +475,6 @@ input[type="number"] {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
 
-/* Hlavička grafu s dropdownom vedľa seba */
 .stats-header-container {
     display: flex;
     justify-content: space-between;
@@ -469,7 +490,7 @@ input[type="number"] {
     color: var(--text-muted);
 }
 
-/* Nový štýlový dropdown pre graf */
+
 .stats-dropdown {
     width: auto;
     padding: 6px 12px;
@@ -488,13 +509,11 @@ input[type="number"] {
     border-color: var(--accent-color);
 }
 
-/* Obal a fixná výška pre čiarový graf */
 .chart-wrapper {
     width: 100%;
     height: 250px;
 }
 
-/* Hláška pre cvik bez záznamov */
 .no-data-message {
     display: flex;
     justify-content: center;
@@ -527,7 +546,6 @@ input[type="number"] {
     flex-direction: column;
 }
 
-/* Zbytok tvojich pôvodných štýlov pre koláč a rekordy zostáva nezmenený */
 .pie-chart-box h3 {
     margin-top: 0;
     margin-bottom: 15px;
@@ -712,8 +730,89 @@ input[type="number"] {
 
 .history-container {
     height: 100vh;
+    max-height: 40rem;
     overflow-y: auto;
+}
 
+.history-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    margin-bottom: 15px;
+    padding: 15px;
+    cursor: pointer;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.history-card:hover {
+    border-color: var(--text-muted);
+}
+
+.history-card.active {
+    border-color: var(--accent-color);
+    background: #1f1f24; /* Mierne tmavšie pozadie pre otvorenú kartu */
+}
+
+.history-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.history-card-header h3 {
+    margin: 0;
+    font-size: 1.15rem;
+}
+
+.workout-date {
+    font-weight: bold;
+    color: var(--accent-color);
+}
+
+.history-card-body {
+    margin-top: 15px;
+    border-top: 1px solid var(--border-color);
+    padding-top: 15px;
+}
+
+.history-exercise-item {
+    margin-bottom: 15px;
+    background: var(--bg-primary);
+    padding: 12px;
+    border-radius: 8px;
+}
+
+.history-exercise-item:last-child {
+    margin-bottom: 0;
+}
+
+.history-exercise-item h4 {
+    color: var(--text-main);
+    margin: 0 0 8px 0;
+    font-size: 1rem;
+}
+
+.exercise-part {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-left: 8px;
+    font-weight: normal;
+}
+
+.history-series-list {
+    list-style-type: none;
+    padding-left: 0;
+    margin: 0;
+}
+
+.history-series-list li {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+}
+
+.history-series-list li:last-child {
+    margin-bottom: 0;
 }
 
 .history-container::-webkit-scrollbar {
@@ -799,7 +898,6 @@ table {
     margin-bottom: 1.5rem;
 }
 
-/* Štýly pre dropdown výbery */
 .form-select {
     width: 100%;
     padding: 10px;
@@ -819,7 +917,6 @@ table {
     border-color: #007bff;
 }
 
-/* Štýly pre popisky (labels) */
 .form-label {
     font-size: 20px;
     font-weight: 600;
@@ -828,12 +925,10 @@ table {
     display: block;
 }
 
-/* Odsadenie druhého popisku nad výberom cviku */
 .label-spacing {
     margin-top: 0.5rem;
 }
 
-/* Odsadenie a prispôsobenie textového poľa pre vlastný cvik */
 .form-input-vlastny {
     margin-top: 10px;
     width: 100%;

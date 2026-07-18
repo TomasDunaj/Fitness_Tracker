@@ -15,7 +15,9 @@ import sk.tomas.fitness_tracker.model.repository.trening.TreningovyZaznamReposit
 import sk.tomas.fitness_tracker.model.trening.Trening;
 import sk.tomas.fitness_tracker.service.TreningService;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/treningy")
@@ -50,5 +52,10 @@ public class TreningController {
     @GetMapping("/statistiky/progres")
     public List<CvikProgresStatistika> getProgresCviku(@RequestParam Long cvikId) {
         return this.treningService.najdiZaznamyPreCvik(cvikId);
+    }
+
+    @GetMapping("/dnesny-trening")
+    public Trening overTrening(@RequestParam(required = false) LocalDate datum) {
+        return this.treningService.getAleboVytvorDnesnyTrening(datum);
     }
 }

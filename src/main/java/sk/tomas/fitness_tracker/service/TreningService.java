@@ -19,6 +19,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class TreningService {
@@ -146,5 +147,16 @@ public class TreningService {
         statistiky.sort(Comparator.comparing(CvikProgresStatistika::getDatum));
 
         return statistiky;
+    }
+
+    public Trening getAleboVytvorDnesnyTrening(LocalDate datum) {
+        LocalDate dnes = LocalDate.now();
+
+        return treningRepository.findByDatum(dnes)
+                .orElseGet(() -> {
+                        Trening novyTrening = new Trening();
+                        novyTrening.setDatum(dnes);
+                        return treningRepository.save(novyTrening);
+                });
     }
 }

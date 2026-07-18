@@ -33,9 +33,9 @@ public class TreningovyZaznamController {
         return this.treningovyZaznamService.getVsetkyZaznamy();
     }
 
-    @PostMapping
-    public TreningovyZaznam vytvorNovyZaznam(@Valid @RequestBody TreningovyZaznam zaznam) {
-        return this.treningovyZaznamService.ulozZaznam(zaznam);
+    @PostMapping("/trening/{treningId}")
+    public TreningovyZaznam vytvorNovyZaznam(@PathVariable Long treningId, @Valid @RequestBody TreningovyZaznam zaznam) {
+        return this.treningovyZaznamService.ulozZaznam(treningId, zaznam);
     }
 
     @PutMapping("/{id}")
