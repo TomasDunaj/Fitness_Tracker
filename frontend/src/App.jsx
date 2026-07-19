@@ -59,6 +59,8 @@ const NAZVY_PARTII = {
     RUKY: "Ruky"
 };
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+
 function App() {
     const [treningy, setTreningy] = useState([]);
     const [activeTab, setActiveTab] = useState('trening');
@@ -81,7 +83,7 @@ function App() {
     const [dnesnyTreningID, setDnesnyTreningID] = useState(null);
 
     useEffect(() => {
-        fetch('http://localhost:8080/api/treningy/dnesny-trening')
+        fetch(`${API_URL}/api/treningy/dnesny-trening`)
             .then(res => {
                 if (!res.ok) throw new Error("Chyba pri načítaní dnešného tréningu");
                 return res.json();
@@ -92,7 +94,7 @@ function App() {
                 if (data.zaznamy && Array.isArray(data.zaznamy)) {
                     setTreningy(data.zaznamy);
                 } else {
-                    setTreningy([]); // Ak je to null, natvrdo tu vnútime prázdne pole
+                    setTreningy([]);
                 }
             })
             .catch(err => console.error("Chyba pri štarte aplikácie:", err));
@@ -110,7 +112,7 @@ function App() {
 
     useEffect(() => {
         if (activeTab === 'historia') {
-            fetch('http://localhost:8080/api/treningy')
+            fetch(`${API_URL}/api/treningy`)
                 .then(response => response.json())
                 .then(data => {
                     setHistory(data);
@@ -119,7 +121,7 @@ function App() {
         }
 
         if (activeTab === 'statistiky') {
-            fetch('http://localhost:8080/api/treningy/statistiky/partie')
+            fetch(`${API_URL}/api/treningy/statistiky/partie`)
                 .then(response => response.json())
                 .then(data => {
                     setStatistikyPartii(data);
@@ -130,7 +132,7 @@ function App() {
 
     useEffect(() => {
         if (activeTab === 'statistiky') {
-            fetch('http://localhost:8080/api/cviky')
+            fetch(`${API_URL}/api/cviky`)
                 .then(response => response.json())
                 .then(data => {
                     setDatabazoveCviky(data);
@@ -144,7 +146,7 @@ function App() {
 
     useEffect(() => {
         if (activeTab === 'statistiky' && vybranyCvikProgresId) {
-            fetch(`http://localhost:8080/api/treningy/statistiky/progres?cvikId=${vybranyCvikProgresId}`)
+            fetch(`${API_URL}/api/treningy/statistiky/progres?cvikId=${vybranyCvikProgresId}`)
                 .then(response => response.json())
                 .then(data => {
                     const formatovaneData = data.map(item => ({
@@ -170,7 +172,7 @@ function App() {
         });
         setTreningy(upraveneTreningy);
 
-        fetch(`http://localhost:8080/api/zaznamy/${idZaznamu}`, {
+        fetch(`${API_URL}/api/zaznamy/${idZaznamu}`, {
             method: 'PUT',
             headers: {"Content-Type": "application/json"}
         })
@@ -212,7 +214,7 @@ function App() {
             return;
         }
 
-        fetch(`http://localhost:8080/api/zaznamy/trening/${dnesnyTreningID}`, {
+        fetch(`${API_URL}/api/zaznamy/trening/${dnesnyTreningID}`, {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify(novyZaznamCviku),
@@ -232,15 +234,13 @@ function App() {
     };
 
     const vymazCvik = (idCviku) => {
-        fetch(`http://localhost:8080/api/zaznamy/${idCviku}`, {
+        fetch(`${API_URL}/api/zaznamy/${idCviku}`, {
             method: "DELETE"
         })
             .then(response => {
                 if (response.ok) {
                     const upraveneTreningy = treningy.filter((t) => t.id !== idCviku);
-
                     setTreningy(upraveneTreningy);
-
                 } else {
                     alert("Backend vrátil chybu, cvik sa nepodarilo vymazať.");
                 }
@@ -276,7 +276,7 @@ function App() {
     const nacitajOsobneRekordy = async () => {
         setIsModalOpen(true);
         try {
-            const response = await fetch('http://localhost:8080/api/zaznamy/osobne-rekordy');
+            const response = await fetch(`${API_URL}/api/zaznamy/osobne-rekordy`);
             const data = await response.json();
             setOsobneRekordy(data);
         } catch (error) {
@@ -456,7 +456,7 @@ function App() {
                             <p>Zatiaľ nemáš uložené žiadne tréningy alebo sa načítavajú...</p>
                         ) : (
                             <div className="history-list">
-                                {history.filter(workout => workout.zaznamy.length > 0).map((workout) => {
+                                {history.filter(workout => workout.zaznamy && workout.zaznamy.length > 0).map((workout) => {
                                     const jeRozbaleny = vybranyTreningHistoriaId === workout.id;
                                     return (
                                         <div key={workout.id} className={`history-card ${jeRozbaleny ? 'active' : ''}`}

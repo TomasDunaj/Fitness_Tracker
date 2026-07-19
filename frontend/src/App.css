@@ -219,6 +219,11 @@ tbody tr:hover td {
     display: block !important;
     overflow-y: auto !important;
     max-height: 26rem !important;
+    &::-webkit-scrollbar {
+        display: none;
+    }
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
 
 .table-div::-webkit-scrollbar {
