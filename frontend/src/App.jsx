@@ -59,7 +59,9 @@ const NAZVY_PARTII = {
     RUKY: "Ruky"
 };
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+const API_URL = import.meta.env.PROD
+    ? 'https://fitness-tracker-backend-swcq.onrender.com'
+    : 'http://localhost:8080';
 
 function App() {
     const [treningy, setTreningy] = useState([]);
