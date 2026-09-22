@@ -11,6 +11,10 @@
   <img src="https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white"/>
 </p>
 
+<p align="center">
+  🔗 <b><a href="https://TU_DAJ_LINK_NA_RENDER_APKU" target="_blank">View Live Application</a></b> <br>
+  <sub>⚠️ <i>Note: Hosted on a free tier, so the initial load might take ~30 seconds if the server is asleep.</i></sub>
+</p>
 ---
 
 ## 📖 About the Project
