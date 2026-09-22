@@ -12,7 +12,7 @@
 </p>
 
 <p align="center">
-  🔗 <b><a href="[https://fitness-tracker-oizp.onrender.com/](https://fitness-tracker-oizp.onrender.com)" target="_blank">View Live Application</a></b> <br>
+  🔗 <b><a href="https://fitness-tracker-oizp.onrender.com" target="_blank">View Live Application</a></b> <br>
   <sub>⚠️ <i>Note: Hosted on a free tier, so the initial load might take ~30 seconds if the server is asleep.</i></sub>
 </p>
 ---
